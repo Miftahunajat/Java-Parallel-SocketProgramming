@@ -6,12 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
-//import javafx.application.Application;
-//import javafx.scene.Scene;
-//import javafx.scene.chart.NumberAxis;
-//import javafx.scene.chart.ScatterChart;
-//import javafx.scene.chart.XYChart;
-//import javafx.stage.Stage;
 
 
 public class Clustering {
@@ -186,41 +180,4 @@ public class Clustering {
         }
     }
 
-//    @Override
-//    public void start(Stage stage) throws Exception {
-//        stage.setTitle("Scatter Chart");
-//        final NumberAxis xAxis = new NumberAxis(0, 200, 10);
-//        final NumberAxis yAxis = new NumberAxis(0, 200, 10);
-//        final ScatterChart<Number,Number> sc = new
-//            ScatterChart<Number,Number>(xAxis,yAxis);
-//        xAxis.setLabel("X");
-//        yAxis.setLabel("Y");
-//        sc.setTitle("Data with Average Linkage Algorithm");
-//
-//        XYChart.Series[] series = new XYChart.Series[k];
-//
-//        int p = 0;
-//        for (int i = 0; i < countData; i++) {
-//            if (cluster[i][0] == null) {
-//                continue;
-//            }
-//
-//            series[p] = new XYChart.Series();
-//            series[p].setName("Cluster " + (i+1));
-//            for (int j = 0; j < cluster[i].length; j++) {
-//                if (cluster[i][j] == null || cluster[i][j][0] == null) {
-//                    break;
-//                }
-//
-//                series[p].getData().add(new XYChart.Data(Double.parseDouble(cluster[i][j][0]),
-//                        Double.parseDouble(cluster[i][j][1])));
-//            }
-//            p++;
-//        }
-//
-//        sc.getData().addAll(series);
-//        Scene scene  = new Scene(sc, 500, 400);
-//        stage.setScene(scene);
-//        stage.show();
-//    }
 }

@@ -1,5 +1,9 @@
 package main.thread;
 
+import main.Task;
+import main.util.StringVector;
+import main.util.VectorSpaceHelper;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,12 +12,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 
-import foo.Task;
-
-import static foo.Config.*;
+import static main.Config.MAX_CLIENT;
+import static main.Config.PORT;
 
 public class MultiThreadManager implements ClientHandler.ClientInteraction {
 
@@ -24,6 +28,9 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     private AtomicIntegerArray clientStatuses = new AtomicIntegerArray(MAX_CLIENT);
     private int numberOfConnectedClient;
     private ExecutorService executorService;
+    public AtomicInteger serverComputeCount = new AtomicInteger();
+    public AtomicInteger temp = new AtomicInteger();
+    public AtomicIntegerArray clientComputeCount = new AtomicIntegerArray(MAX_CLIENT);
 
     private MultiThreadManager() throws IOException {
         executorService = Executors.newFixedThreadPool(10);
@@ -56,6 +63,14 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
             lastClientId++;
             awaitClient();
         }).start();
+    }
+
+    public void close(){
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized AtomicIntegerArray getClientStatus(){
@@ -106,30 +121,30 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                     if (clientStatuses.get(i) == 1){
                         sent = true;
                         threadClients.get(i).sendTask(input);
+                        clientComputeCount.incrementAndGet(i);
                         break;
                     }
+                    if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
                 }
                 if (!sent){
                     executorService.execute(new Task(input) {
                         @Override
                         public void run() {
+                            StringVector operation = new StringVector(taskToSent, true);
+                            operation.getMatrixVector1();
+                            operation.getMatrixVector2();
                             try {
-                                Thread.sleep(3_000);
-                            } catch (InterruptedException e) {
+                                double[][] results = VectorSpaceHelper.multiplyTwoMatrices(operation.getMatrixVector1(), operation.getMatrixVector2());
+                                System.out.println("Server : " + Arrays.deepToString(results));
+                                serverComputeCount.incrementAndGet();
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            System.out.println("Server : " + taskToSent);
                         }
                     });
 
                 }
             }
         }).start();
-        /*executorService.execute(new Task(input) {
-            @Override
-            public void run() {
-
-            }
-        });*/
     }
 }

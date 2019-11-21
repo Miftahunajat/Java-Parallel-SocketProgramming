@@ -34,8 +34,8 @@ public class ClientHandler extends Thread
             this.dos = new DataOutputStream(socket.getOutputStream());
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String connected = "Client number" + clientId + " is connected\n";
-            dos.writeUTF(connected);
+//            String connected = "Client number" + clientId + " is connected\n";
+//            dos.writeUTF(connected);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,7 +105,7 @@ public class ClientHandler extends Thread
 //            System.out.println("Task Sent");
             String hasil = bufferedReader.readLine();
 //            System.out.println("Task Completed");
-            System.out.println(hasil);
+            System.out.println("Client " + clientId + ": " + hasil);
             clientInteraction.onClientFinished(clientId);
         } catch (IOException e) {
             clientInteraction.onClientStop(clientId, input);
