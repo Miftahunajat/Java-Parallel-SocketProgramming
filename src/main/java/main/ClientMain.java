@@ -1,6 +1,7 @@
 package main;
 
 
+import main.util.Core;
 import main.util.StringVector;
 import main.util.VectorSpaceHelper;
 
@@ -38,7 +39,7 @@ public class ClientMain {
                     StringVector operation = new StringVector(line, true);
                     operation.getMatrixVector1();
                     operation.getMatrixVector2();
-                    double[][] results = VectorSpaceHelper.multiplyTwoMatrices(operation.getMatrixVector1(), operation.getMatrixVector2());
+                    double[][] results = Core.getMatInstance().vectorMultiplication(operation.getMatrixVector1(), operation.getMatrixVector2());
 
                     dos.write((Arrays.deepToString(results) + "\n").getBytes());
                     System.out.println(line);

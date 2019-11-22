@@ -1,6 +1,7 @@
 package main.thread;
 
 import main.Task;
+import main.util.Core;
 import main.util.StringVector;
 import main.util.VectorSpaceHelper;
 
@@ -134,7 +135,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                             operation.getMatrixVector1();
                             operation.getMatrixVector2();
                             try {
-                                double[][] results = VectorSpaceHelper.multiplyTwoMatrices(operation.getMatrixVector1(), operation.getMatrixVector2());
+                                double[][] results = Core.getMatInstance().vectorMultiplication(operation.getMatrixVector1(), operation.getMatrixVector2());
                                 System.out.println("Server : " + Arrays.deepToString(results));
                                 serverComputeCount.incrementAndGet();
                             } catch (Exception e) {

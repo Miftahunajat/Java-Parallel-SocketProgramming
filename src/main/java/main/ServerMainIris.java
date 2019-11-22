@@ -2,6 +2,7 @@ package main;
 
 import com.bayudwiyansatria.io.IO;
 import main.thread.MultiThreadManager;
+import main.util.Core;
 import main.util.StringVector;
 import main.util.VectorSpaceHelper;
 
@@ -10,24 +11,16 @@ import java.util.Arrays;
 
 public class ServerMainIris {
     public static void main(String[] args) throws IOException {
-        double[][] irisData = new IO().readCSV_double("iris");
+        double[][] irisData = Core.getIoInstance().readCSV_double("iris");
 
         long start = System.currentTimeMillis();
         // maincode
         MultiThreadManager mtm = MultiThreadManager.getInstance();
-        for (int i = 0; i < 60; i++) {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-//            StringVector stringUtil = new StringVector(vectorOperation);
-//            System.out.println(Arrays.deepToString(stringUtil.getVector1()));
-//            int[][] results = VectorSpaceHelper.multiplyTwoMatrices(
-//                    new int[][]{ {1,1}, {1,1} },new int[][]{{i, i+1, i+2}, {i, i+1, i+2}}
-//            );
-//            System.out.println(Arrays.deepToString(results));
+        for (int i = 0; i < irisData.length; i++) {
+            for (int j = 0; j < irisData.length; j++) {
 
+                mtm.startResult(Arrays.toString(irisData[i]) + "||*||" + Arrays.toString(irisData[j]));
+            }
         }
         //end of main
 

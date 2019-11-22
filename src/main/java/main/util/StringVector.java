@@ -114,9 +114,15 @@ public class StringVector {
         int currentValue = 0;
         int currentIndex = 0;
         int currentIndexNestedArray = 0;
+        int maxLength = 0;
+        for (int i = 0; i < input.toCharArray().length; i++) {
+            if (charArray[i] == ',') maxLength++;
+            if (charArray[i] == ']') break;
+        }
+        maxLength++;
 
 // TODO : Improve This Algorithm
-        double[][] results = new double[maxArrayCount][3];
+        double[][] results = new double[maxArrayCount][maxLength];
         for (int i = 0; i < input.toCharArray().length; ++i) {
             if (charArray[i] >= '0' && charArray[i] <= '9'){
                 currentValue *= 10;

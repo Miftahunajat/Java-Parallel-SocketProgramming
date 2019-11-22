@@ -28,10 +28,7 @@ public class ServerMain {
 //            }
             StringVector stringUtil = new StringVector(vectorOperation, true);
 //            System.out.println(Arrays.deepToString(stringUtil.getVector1()));
-            int[][] results = VectorSpaceHelper.multiplyTwoMatrices(
-                    new int[][]{ {1,1}, {1,1} },new int[][]{{i, i+1, i+2}, {i, i+1, i+2}}
-                    );
-            mtm.startResult(Arrays.deepToString(new int[][]{{1,1, 1}, {1,1, 1}}) + "||*||" + Arrays.deepToString(new int[][]{{i, i+1, i+2}, {i, i+1, i+2}, {i, i+1, i+2}}));
+            mtm.startResult(Arrays.deepToString(new int[][]{{1,1, 1}, {1,1, 1}}) + "||*||" + Arrays.deepToString(new int[][]{{i, i+1, i+2}, {i, i+1, i+2}, {i, i+1, i+2}})); 
             System.out.println(mtm.getClientStatus());
 //            System.out.println(Arrays.deepToString(results));
 
@@ -44,7 +41,7 @@ public class ServerMain {
         System.out.println("===========================");
         System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
         System.out.println("Server Compute Count : " + mtm.serverComputeCount.get());
-        System.out.println("Client Compute Count: " + mtm.clientComputeCount.get(0));
+        System.out.println("Client Compute Count: " + mtm.clientComputeCount.toString());
         System.out.println("Temp Compute Count: " + mtm.temp.get());
     }
 }
