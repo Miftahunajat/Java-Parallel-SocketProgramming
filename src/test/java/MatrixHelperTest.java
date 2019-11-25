@@ -1,7 +1,6 @@
-import com.bayudwiyansatria.math.Math;
-import main.util.Core;
-import main.util.StringVector;
-import main.util.VectorSpaceHelper;
+import com.util.Core;
+import com.util.StringVector;
+import com.util.VectorSpaceHelper;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

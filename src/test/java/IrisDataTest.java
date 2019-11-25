@@ -1,5 +1,5 @@
 import com.bayudwiyansatria.io.IO;
-import main.thread.MultiThreadManager;
+import com.thread.MultiThreadManager;
 import org.junit.Test;
 
 import java.io.IOException;
