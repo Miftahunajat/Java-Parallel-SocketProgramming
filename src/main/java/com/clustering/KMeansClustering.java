@@ -20,12 +20,12 @@ public class KMeansClustering {
             }
         }
 
-        for (int i = 0; i < NumberOfCluster; i++) {
-            for (int j = 0; j < data[0].length; j++) {
-                currentCentroids[i][j] =
-            }
-            currentCentroids[i]
-        }
+//        for (int i = 0; i < NumberOfCluster; i++) {
+//            for (int j = 0; j < data[0].length; j++) {
+//                currentCentroids[i][j] =
+//            }
+//            currentCentroids[i]
+//        }
         double[] nCentroids = new com.bayudwiyansatria.mat.Array().initArray(NumberOfCluster, 0.0);
         boolean cluster;
         do {
