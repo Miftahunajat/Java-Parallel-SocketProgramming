@@ -57,7 +57,12 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ClientHandler clientHandler = new ClientHandler(socket, lastClientId, this);
+            ClientHandler clientHandler = null;
+            try {
+                clientHandler = new ClientHandler(socket, lastClientId, this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             threadClients.put(lastClientId, clientHandler);
             threadClients.get(lastClientId).start();
             lastClientId++;
@@ -99,6 +104,12 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     public void onClientStop(int clientId, String failedInput) {
         updateClientStatus(clientId, 0);
         startResult(failedInput);
+    }
+
+    @Override
+    public void onClientStop(int clientId, double[][] mat1, double[][] mat2) {
+        updateClientStatus(clientId, 0);
+        startResult(mat1,mat2);
     }
 
     @Override
@@ -144,6 +155,37 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                     });
 
                 }
+            }
+        }).start();
+    }
+
+
+    public void startResult(double[][] mat1, double[][] mat2){
+        new Thread(() -> {
+            boolean sent = false;
+            for (int i = 0; i < clientStatuses.length(); i++) {
+                if (clientStatuses.get(i) == 1){
+                    sent = true;
+                    threadClients.get(i).sendTask(mat1, mat2);
+                    clientComputeCount.incrementAndGet(i);
+                    break;
+                }
+                if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
+            }
+            if (!sent){
+                executorService.execute(new Task(mat1, mat2) {
+                    @Override
+                    public void run() {
+                        try {
+                            double[][] results = Core.getMatInstance().vectorMultiplication(mat1, mat2);
+                            System.out.println("Server : " + Arrays.deepToString(results));
+                            serverComputeCount.incrementAndGet();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
             }
         }).start();
     }

@@ -1,12 +1,6 @@
 package com.thread;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler extends Thread
@@ -21,7 +15,12 @@ public class ClientHandler extends Thread
     private BufferedReader bufferedReader;
 
 
-    public ClientHandler(Socket socket, int clientId, ClientInteraction clientInteraction)  {
+    final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    final ObjectOutputStream objectOutputStream =
+            new ObjectOutputStream(byteArrayOutputStream);
+
+
+    public ClientHandler(Socket socket, int clientId, ClientInteraction clientInteraction) throws IOException {
         System.out.println("Waiting CLient " + clientId + " TO CONNECT");
         this.clientId = clientId;
         this.socket = socket;
@@ -116,8 +115,36 @@ public class ClientHandler extends Thread
 
     }
 
+    public void sendTask(double[][] mat1, double[][] mat2) {
+        clientInteraction.onCLientWorking(clientId);
+        try {
+            objectOutputStream.writeObject(mat1);
+            objectOutputStream.writeObject(mat2);
+            byteArrayOutputStream.writeTo(dos);
+            byteArrayOutputStream.toByteArray();
+
+//            dos.write(objectOutputStream);
+//            dos.write((input + "\n").getBytes());
+//            System.out.println("Task Sent");
+            String hasil = bufferedReader.readLine();
+//            System.out.println("Task Completed");
+            System.out.println("Client " + clientId + ": " + hasil);
+            clientInteraction.onClientFinished(clientId);
+        } catch (IOException e) {
+            clientInteraction.onClientStop(clientId, mat1, mat2);
+//            status = 0;
+//            e.printStackTrace();
+        } finally {
+
+        }
+
+    }
+
+
+
     interface ClientInteraction{
         void onClientStop(int clientId, String failedInput);
+        void onClientStop(int clientId, double[][] mat1, double[][] mat2);
         void onCLientWorking(int clientId);
         void onClientFinished(int clientId);
     }

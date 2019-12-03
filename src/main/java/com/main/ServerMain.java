@@ -27,17 +27,8 @@ public class ServerMain {
             double[][] mat3 = VectorSpaceHelper.multiplyTwoMatrices(mat1, mat2);
 
             System.out.println(i);
-//            System.out.println(Arrays.deepToString(mat3));
-//            try {
-//                Thread.sleep(1500);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            StringVector stringUtil = new StringVector(vectorOperation, true);
-//            System.out.println(Arrays.deepToString(stringUtil.getVector1()));
-//            mtm.startResult(Arrays.deepToString(new int[][]{{1,1, 1}, {1,1, 1}}) + "||*||" + Arrays.deepToString(new int[][]{{i, i+1, i+2}, {i, i+1, i+2}, {i, i+1, i+2}}));
-//            System.out.println(mtm.getClientStatus());
-//            System.out.println(Arrays.deepToString(results));
+            mtm.startResult(mat1 , mat2);
+            System.out.println(mtm.getClientStatus());
 
         }
 //        mtm.close();
