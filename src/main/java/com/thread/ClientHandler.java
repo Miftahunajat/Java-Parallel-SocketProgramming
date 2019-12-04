@@ -2,6 +2,7 @@ package com.thread;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class ClientHandler extends Thread
 {
@@ -15,9 +16,8 @@ public class ClientHandler extends Thread
     private BufferedReader bufferedReader;
 
 
-    final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    final ObjectOutputStream objectOutputStream =
-            new ObjectOutputStream(byteArrayOutputStream);
+    ObjectOutputStream objectOutputStream;
+    ObjectInputStream objectInputStream;
 
 
     public ClientHandler(Socket socket, int clientId, ClientInteraction clientInteraction) throws IOException {
@@ -30,8 +30,10 @@ public class ClientHandler extends Thread
         try {
             this.dis = new DataInputStream(socket.getInputStream());
             this.dos = new DataOutputStream(socket.getOutputStream());
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+//            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            this.objectInputStream = new ObjectInputStream(socket.getInputStream());
 //            String connected = "Client number" + clientId + " is connected\n";
 //            dos.writeUTF(connected);
         } catch (IOException e) {
@@ -115,36 +117,33 @@ public class ClientHandler extends Thread
 
     }
 
-    public void sendTask(double[][] mat1, double[][] mat2) {
-        clientInteraction.onCLientWorking(clientId);
-        try {
-            objectOutputStream.writeObject(mat1);
-            objectOutputStream.writeObject(mat2);
-            byteArrayOutputStream.writeTo(dos);
-            byteArrayOutputStream.toByteArray();
-
-//            dos.write(objectOutputStream);
-//            dos.write((input + "\n").getBytes());
-//            System.out.println("Task Sent");
-            String hasil = bufferedReader.readLine();
+    public void sendTask(Double[][] mat1, Double[][] mat2) {
+            clientInteraction.onCLientWorking(clientId);
+        synchronized (this) {
+            try {
+                objectOutputStream.writeObject(mat1);
+                objectOutputStream.writeObject(mat2);
+                Object objResult;
+                Double[][] hasil = null;
+                hasil = (Double[][]) objectInputStream.readObject();
 //            System.out.println("Task Completed");
-            System.out.println("Client " + clientId + ": " + hasil);
-            clientInteraction.onClientFinished(clientId);
-        } catch (IOException e) {
-            clientInteraction.onClientStop(clientId, mat1, mat2);
+                System.out.println("Client " + clientId + ": ");
+                clientInteraction.onClientFinished(clientId);
+            } catch (IOException | ClassNotFoundException e) {
+                clientInteraction.onClientStop(clientId, mat1, mat2);
 //            status = 0;
 //            e.printStackTrace();
-        } finally {
+            } finally {
 
+            }
         }
-
     }
 
 
 
     interface ClientInteraction{
         void onClientStop(int clientId, String failedInput);
-        void onClientStop(int clientId, double[][] mat1, double[][] mat2);
+        void onClientStop(int clientId, Double[][] mat1, Double[][] mat2);
         void onCLientWorking(int clientId);
         void onClientFinished(int clientId);
     }

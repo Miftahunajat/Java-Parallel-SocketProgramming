@@ -1,8 +1,10 @@
 package com.thread;
 
 import com.Task;
+import com.TaskFuture;
 import com.util.Core;
 import com.util.StringVector;
+import com.util.VectorSpaceHelper;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
@@ -27,7 +30,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     private static MultiThreadManager instance;
     private AtomicIntegerArray clientStatuses = new AtomicIntegerArray(MAX_CLIENT);
     private int numberOfConnectedClient;
-    private ExecutorService executorService;
+    public ExecutorService executorService;
     public AtomicInteger serverComputeCount = new AtomicInteger();
     public AtomicInteger temp = new AtomicInteger();
     public AtomicIntegerArray clientComputeCount = new AtomicIntegerArray(MAX_CLIENT);
@@ -52,21 +55,18 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
             Socket socket = null;
             try {
                 socket = serverSocket.accept();
+                ClientHandler clientHandler = null;
+                clientHandler = new ClientHandler(socket, lastClientId, this);
                 clientStatuses.set(numberOfConnectedClient, 1);
                 numberOfConnectedClient++;
+                threadClients.put(lastClientId, clientHandler);
+                threadClients.get(lastClientId).start();
+                lastClientId++;
+                awaitClient();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ClientHandler clientHandler = null;
-            try {
-                clientHandler = new ClientHandler(socket, lastClientId, this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            threadClients.put(lastClientId, clientHandler);
-            threadClients.get(lastClientId).start();
-            lastClientId++;
-            awaitClient();
+
         }).start();
     }
 
@@ -107,7 +107,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     @Override
-    public void onClientStop(int clientId, double[][] mat1, double[][] mat2) {
+    public void onClientStop(int clientId, Double[][] mat1, Double[][] mat2) {
         updateClientStatus(clientId, 0);
         startResult(mat1,mat2);
     }
@@ -160,33 +160,39 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
 
-    public void startResult(double[][] mat1, double[][] mat2){
-        new Thread(() -> {
-            boolean sent = false;
-            for (int i = 0; i < clientStatuses.length(); i++) {
-                if (clientStatuses.get(i) == 1){
-                    sent = true;
-                    threadClients.get(i).sendTask(mat1, mat2);
-                    clientComputeCount.incrementAndGet(i);
-                    break;
-                }
-                if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
-            }
-            if (!sent){
-                executorService.execute(new Task(mat1, mat2) {
+    public Future<?> startResult(Double[][] mat1, Double[][] mat2){
+        boolean sent = false;
+        for (int i = 0; i < clientStatuses.length(); i++) {
+            if (clientStatuses.get(i) == 1){
+                sent = true;
+                clientComputeCount.incrementAndGet(i);
+                int finalI = i;
+                return executorService.submit(new TaskFuture(mat1, mat2) {
                     @Override
-                    public void run() {
-                        try {
-                            double[][] results = Core.getMatInstance().vectorMultiplication(mat1, mat2);
-                            System.out.println("Server : " + Arrays.deepToString(results));
-                            serverComputeCount.incrementAndGet();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    public Double[][] call() throws Exception {
+                        threadClients.get(finalI).sendTask(mat1, mat2);
+                        return new Double[0][];
                     }
                 });
-
             }
-        }).start();
+            if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
+        }
+        if (!sent){
+            try {
+                Double[][] results = VectorSpaceHelper.multiplyTwoMatrices(mat1, mat2);
+//                System.out.println("Server : " + Arrays.deepToString(results));
+                System.out.println("Server : 1");
+                serverComputeCount.incrementAndGet();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+//        return executorService.submit(new TaskFuture(mat1, mat2) {
+//            @Override
+//            public Double[][] call() {
+//
+//            }
+//        });
     }
 }

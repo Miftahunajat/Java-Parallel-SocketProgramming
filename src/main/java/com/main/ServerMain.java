@@ -16,18 +16,13 @@ public class ServerMain {
     private static List<ArrayList<Integer>> result = new ArrayList<>();
     private static int[][] matrix = new int[][]{{1,2,3},{4,5,6}, {7,8,9}};
     public static void main(String[] args) throws Exception {
-
-
         long start = System.currentTimeMillis();
         // maincode
         MultiThreadManager mtm = MultiThreadManager.getInstance();
-        for (int i = 0; i < 60; i++) {
-            double[][] mat1 = new com.bayudwiyansatria.mat.Mat().initArrayRandom(10,1000,1,1000.0);
-            double[][] mat2 = new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,10_000,1,1000.0);
-            double[][] mat3 = VectorSpaceHelper.multiplyTwoMatrices(mat1, mat2);
+        for (int i = 0; i < 60_000; i++) {
 
             System.out.println(i);
-            mtm.startResult(mat1 , mat2);
+            mtm.startResult(vectorOperation);
             System.out.println(mtm.getClientStatus());
 
         }
