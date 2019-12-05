@@ -117,7 +117,7 @@ public class ClientHandler extends Thread
 
     }
 
-    public void sendTask(Double[][] mat1, Double[][] mat2) {
+    public Double[][] sendTask(Double[][] mat1, Double[][] mat2) {
             clientInteraction.onCLientWorking(clientId);
         synchronized (this) {
             try {
@@ -129,12 +129,13 @@ public class ClientHandler extends Thread
 //            System.out.println("Task Completed");
                 System.out.println("Client " + clientId + ": ");
                 clientInteraction.onClientFinished(clientId);
+                return hasil;
             } catch (IOException | ClassNotFoundException e) {
                 clientInteraction.onClientStop(clientId, mat1, mat2);
 //            status = 0;
 //            e.printStackTrace();
             } finally {
-
+                return null;
             }
         }
     }

@@ -5,6 +5,7 @@ import com.TaskFuture;
 import com.util.Core;
 import com.util.StringVector;
 import com.util.VectorSpaceHelper;
+import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -183,6 +184,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
 //                System.out.println("Server : " + Arrays.deepToString(results));
                 System.out.println("Server : 1");
                 serverComputeCount.incrementAndGet();
+                return ConcurrentUtils.constantFuture(results);
             } catch (Exception e) {
                 e.printStackTrace();
             }
