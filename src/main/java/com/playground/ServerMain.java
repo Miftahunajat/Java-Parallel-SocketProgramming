@@ -61,13 +61,13 @@ public class ServerMain {
 //            Double[][] sHasil = (Double[][]) objectInputStream.readObject();
 //            System.out.println(Arrays.deepToString(sHasil));
         }
-//        hasilPerhitungan.forEach(a -> {
-//            try {
-//                a.get();
-//            } catch (InterruptedException | ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//        });
+        hasilPerhitungan.forEach(a -> {
+            try {
+                a.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
 
         long finish = System.currentTimeMillis();
         long timeElapsed = finish - start;
