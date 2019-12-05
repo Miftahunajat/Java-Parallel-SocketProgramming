@@ -161,7 +161,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
 
-    public Future<?> startResult(Double[][] mat1, Double[][] mat2){
+    public Future<Double[][]> startResult(Double[][] mat1, Double[][] mat2){
         boolean sent = false;
         for (int i = 0; i < clientStatuses.length(); i++) {
             if (clientStatuses.get(i) == 1){

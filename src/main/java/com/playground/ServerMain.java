@@ -31,10 +31,10 @@ public class ServerMain {
 
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
-        List<Future<?>> hasilPerhitungan = new ArrayList<>();
+        List<Future<Double[][]>> hasilPerhitungan = new ArrayList<>();
 
         double[][] mat1 = new com.bayudwiyansatria.mat.Mat().initArrayRandom(10,1000,1,1000.0);
-        double[][] mat2 = new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,10_000,1,1000.0);
+        double[][] mat2 = new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,100,1,1000.0);
 
         Double[][] kmat1 = new Double[][]{{1.0,2.0}, {1.0,2.0}};
         Double[][] kmat2 = new Double[][]{{2.0,3.0}, {2.0,3.0}};

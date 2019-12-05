@@ -33,8 +33,20 @@ public class ClientMain {
                     Object objData2;
                     Double[][] data1 = null;
                     Double[][] data2 = null;
-                    data1 = (Double[][]) objectInputStream.readObject();
-                    data2 = (Double[][]) objectInputStream.readObject();
+                    Integer firstLength = null;
+                    Integer secondLength = null;
+                    firstLength = (Integer) objectInputStream.readObject();
+                    data1 = new Double[firstLength][];
+                    for (Integer i = 0; i < firstLength; i++) {
+                        data1[i] = (Double[]) objectInputStream.readObject();
+                    }
+                    System.out.println(Arrays.deepToString(data1));
+                    secondLength = (Integer) objectInputStream.readObject();
+                    data2 = new Double[secondLength][];
+                    for (Integer i = 0; i < secondLength; i++) {
+                        data2[i] = (Double[]) objectInputStream.readObject();
+                    }
+                    System.out.println(Arrays.deepToString(data2));
 
                     Double[][] hasil = VectorSpaceHelper.multiplyTwoMatrices(data1, data2);
                     System.out.println(Arrays.deepToString(hasil));
@@ -42,6 +54,7 @@ public class ClientMain {
 
 //            System.out.println(Arrays.deepToString(hasil));
                     System.out.println("Counter = " + counter);
+                    objectOutputStream.flush();
 
                 }
             }catch (ConnectException connectException){

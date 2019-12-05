@@ -121,9 +121,14 @@ public class ClientHandler extends Thread
             clientInteraction.onCLientWorking(clientId);
         synchronized (this) {
             try {
-                objectOutputStream.writeObject(mat1);
-                objectOutputStream.writeObject(mat2);
-                Object objResult;
+                objectOutputStream.writeObject(mat1.length);
+                for (int i = 0; i < mat1.length; i++) {
+                    objectOutputStream.writeObject(mat1[i]);
+                }
+                objectOutputStream.writeObject(mat2.length);
+                for (int i = 0; i < mat2.length; i++) {
+                    objectOutputStream.writeObject(mat2[i]);
+                }
                 Double[][] hasil = null;
                 hasil = (Double[][]) objectInputStream.readObject();
 //            System.out.println("Task Completed");
