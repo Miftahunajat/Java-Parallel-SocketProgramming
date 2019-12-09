@@ -1,5 +1,9 @@
 package com.thread;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
@@ -14,6 +18,10 @@ public class ClientHandler extends Thread
     int status;
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
+    private Kryo kryo;
+    private Output output;
+    private Input input;
+
 
 
     ObjectOutputStream objectOutputStream;
@@ -26,6 +34,11 @@ public class ClientHandler extends Thread
         this.socket = socket;
         this.clientInteraction = clientInteraction;
         status = 1;
+        kryo = new Kryo();
+        kryo.register(Double[][].class);
+        input = new Input(socket.getInputStream());
+        output = new Output(socket.getOutputStream());
+
 
         try {
             this.dis = new DataInputStream(socket.getInputStream());
@@ -44,98 +57,22 @@ public class ClientHandler extends Thread
     @Override
     public void run()
     {
-        while (status != 0)
-        {
-//            try {
-//                Thread.sleep(5000);
-//                dos.write("check status \n".getBytes());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                System.out.println(e.toString());
-//                clientInteraction.onClientStop(clientId);
-//                status = 0;
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            try {
-//
-//                // Ask user what he wants
-//                dos.writeUTF("What do you want?[Date | Time]..\n"+
-//                        "Type Exit to terminate connection.");
-//
-//                // receive the answer from client
-//                received = dis.readUTF();
-//
-//                if(received.equals("Exit"))
-//                {
-////                    System.out.println("Client " + this.s + " sends exit...");
-//                    System.out.println("Closing this connection.");
-////                    this.s.close();
-//                    System.out.println("Connection closed");
-//                    break;
-//                }
-//
-//                // creating Date object
-//                Date date = new Date();
-//
-//                // write on output stream based on the
-//                // answer from the client
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-        }
-
-//        try
-//        {
-            // closing resources
-//            this.dis.close();
-//            this.dos.close();
-//
-//        }catch(IOException e)
-//        {
-//            e.printStackTrace();
-//        }
-    }
-
-    public void sendTask(String input) {
-        clientInteraction.onCLientWorking(clientId);
-        try {
-//            System.out.println("Send Task");
-            dos.write((input + "\n").getBytes());
-//            System.out.println("Task Sent");
-            String hasil = bufferedReader.readLine();
-//            System.out.println("Task Completed");
-            System.out.println("Client " + clientId + ": " + hasil);
-            clientInteraction.onClientFinished(clientId);
-        } catch (IOException e) {
-            clientInteraction.onClientStop(clientId, input);
-//            status = 0;
-//            e.printStackTrace();
-        } finally {
-
-        }
-
+        while (status != 0) {}
     }
 
     public Double[][] sendTask(Double[][] mat1, Double[][] mat2) {
-            clientInteraction.onCLientWorking(clientId);
         synchronized (this) {
             try {
-                objectOutputStream.writeObject(mat1.length);
-                for (int i = 0; i < mat1.length; i++) {
-                    objectOutputStream.writeObject(mat1[i]);
-                }
-                objectOutputStream.writeObject(mat2.length);
-                for (int i = 0; i < mat2.length; i++) {
-                    objectOutputStream.writeObject(mat2[i]);
-                }
+                kryo.writeObject(output, mat1);
+                kryo.writeObject(output, mat2);
+                output.flush();
+
                 Double[][] hasil = null;
-                hasil = (Double[][]) objectInputStream.readObject();
-//            System.out.println("Task Completed");
+                hasil = kryo.readObject(input, Double[][].class);
                 System.out.println("Client " + clientId + ": ");
                 clientInteraction.onClientFinished(clientId);
                 return hasil;
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
                 clientInteraction.onClientStop(clientId, mat1, mat2);
 //            status = 0;
 //            e.printStackTrace();
@@ -143,12 +80,17 @@ public class ClientHandler extends Thread
                 return null;
             }
         }
+
+//        fst
+//        byte barray[] = conf.asByteArray(mat1);
+//        dos.writeInt(barray.length);
+//        dos.write(barray);
+
     }
 
 
 
     interface ClientInteraction{
-        void onClientStop(int clientId, String failedInput);
         void onClientStop(int clientId, Double[][] mat1, Double[][] mat2);
         void onCLientWorking(int clientId);
         void onClientFinished(int clientId);
