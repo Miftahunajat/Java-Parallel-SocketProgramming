@@ -66,6 +66,7 @@ public class ClientMain {
                     Double[][] hasil = VectorSpaceHelper.multiplyTwoMatrices(data1, data2);
 //                    System.out.println(Arrays.deepToString(hasil));
 //                    objectOutputStream.writeObject(hasil);
+                    System.out.println("mau ngirim hasil");
                     kryo.writeObject(output, hasil);
                     output.flush();
 

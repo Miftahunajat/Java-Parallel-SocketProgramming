@@ -7,9 +7,11 @@
     <groupId>miftahunajat</groupId>
     <artifactId>java-parallel-computing</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <exec.mainClass>com.main.ClientMain</exec.mainClass>
     </properties>
     <dependencies>
         <dependency>
