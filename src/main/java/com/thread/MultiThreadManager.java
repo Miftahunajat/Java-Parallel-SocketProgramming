@@ -142,10 +142,12 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                     executorService.execute(new Task(input) {
                         @Override
                         public void run() {
+                            System.out.println("masul");
                             StringVector operation = new StringVector(taskToSent, true);
                             operation.getMatrixVector1();
                             operation.getMatrixVector2();
                             try {
+
                                 double[][] results = Core.getMatInstance().vectorMultiplication(operation.getMatrixVector1(), operation.getMatrixVector2());
                                 System.out.println("Server : " + Arrays.deepToString(results));
                                 serverComputeCount.incrementAndGet();

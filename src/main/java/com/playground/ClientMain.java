@@ -2,6 +2,9 @@ package com.playground;
 
 
 import com.Config;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.util.Core;
 import com.util.StringVector;
 import com.util.VectorSpaceHelper;
@@ -16,18 +19,24 @@ import java.util.Scanner;
 
 public class ClientMain {
     public static void main(String[] args) throws Exception {
+        Kryo kryo;
+        kryo = new Kryo();
+        Output output;
+        Input input;
         while (true){
             try {
                 int counter = 0;
-
                 InetAddress ip = InetAddress.getByName(Config.INET_ADDRESS_NAME);
                 Socket s = new Socket(ip, Config.PORT);
 
                 ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
+                output = new Output(s.getOutputStream());
+                kryo.register(Double[][].class);
 
                 while (true) {
-                    System.out.println("waiting next line");
+//                    System.out.println("waiting next line");
+                    input = new Input(s.getInputStream());
                     counter++;
                     Object objData1;
                     Object objData2;
@@ -35,26 +44,34 @@ public class ClientMain {
                     Double[][] data2 = null;
                     Integer firstLength = null;
                     Integer secondLength = null;
-                    firstLength = (Integer) objectInputStream.readObject();
-                    data1 = new Double[firstLength][];
-                    for (Integer i = 0; i < firstLength; i++) {
-                        data1[i] = (Double[]) objectInputStream.readObject();
-                    }
-                    System.out.println(Arrays.deepToString(data1));
-                    secondLength = (Integer) objectInputStream.readObject();
-                    data2 = new Double[secondLength][];
-                    for (Integer i = 0; i < secondLength; i++) {
-                        data2[i] = (Double[]) objectInputStream.readObject();
-                    }
-                    System.out.println(Arrays.deepToString(data2));
+//                    firstLength = (Integer) objectInputStream.readObject();
+//                    data1 = new Double[firstLength][];
+//                    for (Integer i = 0; i < firstLength; i++) {
+//                        data1[i] = (Double[]) objectInputStream.readObject();
+//                    }
+                    data1 = kryo.readObject(input, Double[][].class);
+//                    System.out.println("read 1");
+//                    System.out.println(Arrays.deepToString(data1));
+//                    input = new Input(s.getInputStream());
+//                    secondLength = (Integer) objectInputStream.readObject();
+//                    data2 = new Double[secondLength][];
+//                    for (Integer i = 0; i < secondLength; i++) {
+//                        data2[i] = (Double[]) objectInputStream.readObject();
+//                    }
+                    data2 = kryo.readObject(input, Double[][].class);
+//                    System.out.println("read 2");
+//                    System.out.println(Arrays.deepToString(data2));
+//                    input.close();
 
                     Double[][] hasil = VectorSpaceHelper.multiplyTwoMatrices(data1, data2);
-                    System.out.println(Arrays.deepToString(hasil));
-                    objectOutputStream.writeObject(hasil);
+//                    System.out.println(Arrays.deepToString(hasil));
+//                    objectOutputStream.writeObject(hasil);
+                    kryo.writeObject(output, hasil);
+                    output.flush();
 
 //            System.out.println(Arrays.deepToString(hasil));
                     System.out.println("Counter = " + counter);
-                    objectOutputStream.flush();
+//                    objectOutputStream.flush();
 
                 }
             }catch (ConnectException connectException){

@@ -4,24 +4,14 @@ package com.playground;
 import com.thread.MultiThreadManager;
 import com.util.VectorSpaceHelper;
 import org.apache.commons.lang3.ArrayUtils;
-import sun.security.util.ArrayUtil;
 
-import javax.xml.crypto.Data;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import static com.Config.PORT;
 
 
 public class ServerMain {
@@ -34,7 +24,7 @@ public class ServerMain {
         List<Future<Double[][]>> hasilPerhitungan = new ArrayList<>();
 
         double[][] mat1 = new com.bayudwiyansatria.mat.Mat().initArrayRandom(10,1000,1,1000.0);
-        double[][] mat2 = new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,100,1,1000.0);
+        double[][] mat2 = new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,10_000,1,1000.0);
 
         Double[][] kmat1 = new Double[][]{{1.0,2.0}, {1.0,2.0}};
         Double[][] kmat2 = new Double[][]{{2.0,3.0}, {2.0,3.0}};
@@ -43,6 +33,7 @@ public class ServerMain {
 
         Double[][] mat1O = Arrays.stream(new com.bayudwiyansatria.mat.Mat().initArrayRandom(10,1000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
         Double[][] mat2O = Arrays.stream(new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,10_000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
+//        new com.bayudwiyansatria.io.IO().saveCSV(mat2, "matrix2");
 
         System.out.println("aggregate client");
 //        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -50,10 +41,14 @@ public class ServerMain {
 
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         for (int i = 0; i < 60; i++) {
-            System.out.println(i);
+//            System.out.println(i);
+//            mtm.startResult(
+//                    Arrays.deepToString(mat1) + "||*||" + Arrays.deepToString(mat2)
+//            );
+//            System.out.println(i);
             hasilPerhitungan.add(mtm.startResult(mat1O, mat2O));
-
-            System.out.println(mtm.getClientStatus());
+//
+//            System.out.println(mtm.getClientStatus());
 
 //            objectOutputStream.writeObject(mat1O);
 //            objectOutputStream.writeObject(mat2O);

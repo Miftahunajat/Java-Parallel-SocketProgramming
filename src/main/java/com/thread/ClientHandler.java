@@ -1,5 +1,9 @@
 package com.thread;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
@@ -14,6 +18,9 @@ public class ClientHandler extends Thread
     int status;
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
+    private Kryo kryo;
+    private Output output;
+    private Input input;
 
 
     ObjectOutputStream objectOutputStream;
@@ -26,6 +33,11 @@ public class ClientHandler extends Thread
         this.socket = socket;
         this.clientInteraction = clientInteraction;
         status = 1;
+        kryo = new Kryo();
+        kryo.register(Double[][].class);
+        input = new Input(socket.getInputStream());
+        output = new Output(socket.getOutputStream());
+
 
         try {
             this.dis = new DataInputStream(socket.getInputStream());
@@ -121,21 +133,26 @@ public class ClientHandler extends Thread
             clientInteraction.onCLientWorking(clientId);
         synchronized (this) {
             try {
-                objectOutputStream.writeObject(mat1.length);
-                for (int i = 0; i < mat1.length; i++) {
-                    objectOutputStream.writeObject(mat1[i]);
-                }
-                objectOutputStream.writeObject(mat2.length);
-                for (int i = 0; i < mat2.length; i++) {
-                    objectOutputStream.writeObject(mat2[i]);
-                }
+                kryo.writeObject(output, mat1);
+                kryo.writeObject(output, mat2);
+                output.flush();
+
+//                objectOutputStream.writeObject(mat1.length);
+//                for (int i = 0; i < mat1.length; i++) {
+//                    objectOutputStream.writeObject(mat1[i]);
+//                }
+//                objectOutputStream.writeObject(mat2.length);
+//                for (int i = 0; i < mat2.length; i++) {
+//                    objectOutputStream.writeObject(mat2[i]);
+//                }
                 Double[][] hasil = null;
-                hasil = (Double[][]) objectInputStream.readObject();
+                hasil = kryo.readObject(input, Double[][].class);
+//                System.out.println("read 1");
 //            System.out.println("Task Completed");
                 System.out.println("Client " + clientId + ": ");
                 clientInteraction.onClientFinished(clientId);
                 return hasil;
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
                 clientInteraction.onClientStop(clientId, mat1, mat2);
 //            status = 0;
 //            e.printStackTrace();
