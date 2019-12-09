@@ -36,6 +36,7 @@ public class ClientHandler extends Thread
         status = 1;
         kryo = new Kryo();
         kryo.register(Double[][].class);
+        kryo.register(int.class);
         input = new Input(socket.getInputStream());
         output = new Output(socket.getOutputStream());
 
@@ -63,8 +64,22 @@ public class ClientHandler extends Thread
     public Double[][] sendTask(Double[][] mat1, Double[][] mat2) {
         synchronized (this) {
             try {
-                kryo.writeObject(output, mat1);
-                kryo.writeObject(output, mat2);
+                kryo.writeObject(output, mat1.length);
+                for (int i = 0; i < mat1.length; i++) {
+                    kryo.writeObject(output, mat1[i]);
+                }
+
+                kryo.writeObject(output, mat2.length);
+                for (int i = 0; i < mat2.length; i++) {
+                    kryo.writeObject(output, mat2[i]);
+                }
+
+//                objectOutputStream.writeObject(mat2.length);
+//                for (int i = 0; i < mat2.length; i++) {
+//                    objectOutputStream.writeObject(mat2[i]);
+//                }
+//                kryo.writeObject(output, mat1);
+//                kryo.writeObject(output, mat2);
                 output.flush();
 
                 Double[][] hasil = null;
