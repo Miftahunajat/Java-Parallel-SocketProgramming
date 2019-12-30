@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class ServerMainIris {
     public static void main(String[] args) throws IOException {
         double[][] irisData = Core.getIoInstance().readCSV_double("iris");
+        System.out.println(Arrays.deepToString(irisData));
 
         long start = System.currentTimeMillis();
         // maincode
@@ -25,4 +26,5 @@ public class ServerMainIris {
         System.out.println("===========================");
         System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
     }
+
 }

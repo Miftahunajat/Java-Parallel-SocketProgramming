@@ -36,6 +36,8 @@ public class ClientHandler extends Thread
         status = 1;
         kryo = new Kryo();
         kryo.register(Double[][].class);
+        kryo.register(Double[].class);
+        kryo.register(Double.class);
         kryo.register(int.class);
         input = new Input(socket.getInputStream());
         output = new Output(socket.getOutputStream());
@@ -73,13 +75,6 @@ public class ClientHandler extends Thread
                 for (int i = 0; i < mat2.length; i++) {
                     kryo.writeObject(output, mat2[i]);
                 }
-
-//                objectOutputStream.writeObject(mat2.length);
-//                for (int i = 0; i < mat2.length; i++) {
-//                    objectOutputStream.writeObject(mat2[i]);
-//                }
-//                kryo.writeObject(output, mat1);
-//                kryo.writeObject(output, mat2);
                 output.flush();
 
                 Double[][] hasil = null;
@@ -89,17 +84,38 @@ public class ClientHandler extends Thread
                 return hasil;
             } catch (Exception e) {
                 clientInteraction.onClientStop(clientId, mat1, mat2);
-//            status = 0;
-//            e.printStackTrace();
             } finally {
                 return null;
             }
         }
 
-//        fst
-//        byte barray[] = conf.asByteArray(mat1);
-//        dos.writeInt(barray.length);
-//        dos.write(barray);
+    }
+
+    public double getDistanceTask(Double[] mat1, Double[] mat2) {
+        synchronized (this) {
+            try {
+                kryo.writeObject(output, mat1.length);
+                for (int i = 0; i < mat1.length; i++) {
+                    kryo.writeObject(output, mat1[i]);
+                }
+
+                kryo.writeObject(output, mat2.length);
+                for (int i = 0; i < mat2.length; i++) {
+                    kryo.writeObject(output, mat2[i]);
+                }
+                output.flush();
+
+                Double hasil;
+                hasil = kryo.readObject(input, Double.class);
+                System.out.println("Client " + clientId + ": ");
+                clientInteraction.onClientFinished(clientId);
+                return hasil;
+            } catch (Exception e) {
+                clientInteraction.onClientStopDistances(clientId, mat1, mat2);
+            } finally {
+                return 0;
+            }
+        }
 
     }
 
@@ -107,6 +123,7 @@ public class ClientHandler extends Thread
 
     interface ClientInteraction{
         void onClientStop(int clientId, Double[][] mat1, Double[][] mat2);
+        void onClientStopDistances(int clientId, Double[] mat1, Double[] mat2);
         void onCLientWorking(int clientId);
         void onClientFinished(int clientId);
     }

@@ -1,17 +1,11 @@
 package com.thread;
 
-import com.Task;
-import com.TaskFuture;
-import com.util.Core;
-import com.util.StringVector;
 import com.util.VectorSpaceHelper;
 import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.SQLOutput;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -19,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
-import java.util.function.BiConsumer;
 
 
 import static com.Config.MAX_CLIENT;
@@ -99,6 +92,12 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     @Override
+    public void onClientStopDistances(int clientId, Double[] mat1, Double[] mat2) {
+        updateClientStatus(clientId, 0);
+        getDistance(mat1,mat2);
+    }
+
+    @Override
     public void onCLientWorking(int clientId) {
         updateClientStatus(clientId, 2);
     }
@@ -128,6 +127,35 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         }
         try {
             Double[][] results = VectorSpaceHelper.multiplyTwoMatrices(mat1, mat2);
+            System.out.println("Server : 1");
+            serverComputeCount.incrementAndGet();
+            return ConcurrentUtils.constantFuture(results);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Future<Double> getDistance(Double[] mat1, Double[] mat2){
+//        boolean sent = false;
+        for (int i = 0; i < clientStatuses.length(); i++) {
+            if (clientStatuses.get(i) == 1){
+//                sent = true;
+                clientComputeCount[i]++;
+                int finalI = i;
+                onCLientWorking(i);
+                return executorService.submit(new GetDistanceFuture(mat1, mat2) {
+                    @Override
+                    public Double call() {
+                        return threadClients.get(finalI).getDistanceTask(mat1, mat2);
+//                        return null;
+                    }
+                });
+            }
+//            if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
+        }
+        try {
+            double results = VectorSpaceHelper.getDistances(mat1, mat2);
             System.out.println("Server : 1");
             serverComputeCount.incrementAndGet();
             return ConcurrentUtils.constantFuture(results);
