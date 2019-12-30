@@ -2,39 +2,52 @@ package com.main;
 
 
 import com.thread.MultiThreadManager;
-import com.util.StringVector;
 import com.util.VectorSpaceHelper;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class ServerMain {
-    private static String vectorOperation = "[[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]||*||[[1, 2, 3], [4, 5, 6], [7, 8, 9]]";
-    private static String expectedResult = "[1, 4, 9, 16, 25, 36, 49, 64]";
-    private static List<ArrayList<Integer>> result = new ArrayList<>();
-    private static int[][] matrix = new int[][]{{1,2,3},{4,5,6}, {7,8,9}};
+
+    private static ServerSocket serverSocket;
+    private static Socket socket;
+
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
-        // maincode
+        List<Future<Double[][]>> hasilPerhitungan = new ArrayList<>();
+
+        Double[][] kmat1 = new Double[][]{{1.0,2.0}, {1.0,2.0}};
+        Double[][] kmat2 = new Double[][]{{2.0,3.0}, {2.0,3.0}};
+        Double[][] hasil = VectorSpaceHelper.multiplyTwoMatrices(kmat1, kmat2);
+
+        Double[][] mat1O = Arrays.stream(new com.bayudwiyansatria.mat.Mat().initArrayRandom(10,1000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
+        Double[][] mat2O = Arrays.stream(new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,10_000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
+
         MultiThreadManager mtm = MultiThreadManager.getInstance();
-        for (int i = 0; i < 60_000; i++) {
-
-            System.out.println(i);
-            mtm.startResult(vectorOperation);
-            System.out.println(mtm.getClientStatus());
-
+        for (int i = 0; i < 25; i++) {
+            hasilPerhitungan.add(mtm.startResult(mat1O, mat2O));
         }
-//        mtm.close();
-        //end of main
+        hasilPerhitungan.forEach(a -> {
+            try {
+                a.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+        mtm.close();
 
         long finish = System.currentTimeMillis();
         long timeElapsed = finish - start;
         System.out.println("===========================");
         System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
         System.out.println("Server Compute Count : " + mtm.serverComputeCount.get());
-        System.out.println("Client Compute Count: " + mtm.clientComputeCount.toString());
+        System.out.println("Client Compute Count: " + Arrays.toString(mtm.clientComputeCount));
         System.out.println("Temp Compute Count: " + mtm.temp.get());
     }
 }
