@@ -10,9 +10,9 @@ import java.util.stream.IntStream;
 public class Testing {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        double[][] irises = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
+        double[][] irises = Core.readLargeCSV("src/main/resources/2.5kbigdata.csv");
         try {
-            int[] results = HierarchicalClustering.hierarchicalClustering(irises, 3);
+            int[] results = HierarchicalClustering.centroidLinkageClustering(irises, 3);
             System.out.println(Arrays.toString(results));
         } catch (Exception e) {
             e.printStackTrace();

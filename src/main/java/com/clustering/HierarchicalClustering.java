@@ -16,15 +16,17 @@ import java.util.stream.IntStream;
 
 public class HierarchicalClustering {
 
-    public static int[] hierarchicalClustering(double[][] data, int numberOfClusters){
+    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters){
         int currentClusterCount = data.length;
         int[] selCentroids = new int[data.length];
+        double[][] centroids = new double[data.length][];
 
         Map<Integer, double[][]> mapData = new HashMap<>();
 
         for (int i = 0; i < data.length; i++) {
             mapData.put(i, new double[][]{data[i]});
             selCentroids[i] = i;
+            centroids[i] = data[i].clone();
         }
         while (currentClusterCount != numberOfClusters){
 
@@ -60,12 +62,11 @@ public class HierarchicalClustering {
                     double[][] data2 = mapData.get(j);
 
 
-                    double distance = centroidLinkage(data1, data2);
+                    double distance = centroidLinkage(centroids[i], centroids[j]);
 //                    double distance = 0;
                     distances.add(new CentroidDistance(distance,i,j));
                 }
             }
-            System.out.println(currentClusterCount);
 
 
             CentroidDistance minDistance = distances.parallelStream().min(Comparator.comparing(CentroidDistance::getDistance)).get();
@@ -81,6 +82,7 @@ public class HierarchicalClustering {
                 selCentroids = Arrays
                         .stream(selCentroids).map(idx -> idx == finalRight ? finalLeft : idx)
                         .toArray();
+                centroids[left] = Core.getCentroidsFromDouble(newData);
             }else{
                 double[][] newData = Core.joinMultipleArray(mapData.get(right), mapData.get(left));
                 mapData.remove(left);
@@ -88,6 +90,7 @@ public class HierarchicalClustering {
                 selCentroids = Arrays
                         .stream(selCentroids).map(idx -> idx == finalLeft ? finalRight : idx)
                         .toArray();
+                centroids[right] = Core.getCentroidsFromDouble(newData);
             }
 
             currentClusterCount--;
@@ -157,9 +160,7 @@ public class HierarchicalClustering {
 //        return selCentroids;
 //    }
 
-    private static double centroidLinkage(double[][] data1, double[][] data2) {
-        double[] centroid1 = Core.getCentroidsFromDouble(data1);
-        double[] centroid2 = Core.getCentroidsFromDouble(data2);
+    private static double centroidLinkage(double[] centroid1, double[] centroid2) {
         double retval = 0;
         for (int i = 0; i < centroid1.length; i++) {
             retval += Math.pow((centroid1[i] - centroid2[i]),2);
@@ -350,7 +351,6 @@ public class HierarchicalClustering {
                 }
             }
 
-            System.out.println(length);
             clusters = this.getNormalLabel(clusters);
 
             int[][] member = new int[length][];
