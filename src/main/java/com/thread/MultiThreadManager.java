@@ -144,7 +144,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 clientComputeCount[i]++;
                 int finalI = i;
                 onCLientWorking(i);
-                return executorService.submit(new GetDistanceFuture(mat1, mat2) {
+                return executorService.submit(new FutureGetDistance(mat1, mat2) {
                     @Override
                     public Double call() {
                         return threadClients.get(finalI).getDistanceTask(mat1, mat2);

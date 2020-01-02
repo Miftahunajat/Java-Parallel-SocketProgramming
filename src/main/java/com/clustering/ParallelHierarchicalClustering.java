@@ -4,19 +4,18 @@ import com.bayudwiyansatria.mat.Mat;
 import com.bayudwiyansatria.mat.Vector;
 import com.thread.MultiThreadManager;
 import com.util.Core;
-import org.apache.commons.lang3.ArrayUtils;
-import org.jcp.xml.dsig.internal.dom.Utils;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
-import java.util.stream.DoubleStream;
-import java.util.stream.IntStream;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
-public class HierarchicalClustering {
+public class ParallelHierarchicalClustering {
 
-    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters){
+//    static MultiThreadManager mtm;
+
+    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters) throws InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         int currentClusterCount = data.length;
         int[] selCentroids = new int[data.length];
         double[][] centroids = new double[data.length][];
@@ -32,46 +31,38 @@ public class HierarchicalClustering {
             int left;
             int right;
 
+            final CentroidDistance[] minDistance = {new CentroidDistance(Double.MAX_VALUE, -1, -1)};
+            List<FutureCentroidDistance> futureCentroidDistances = new ArrayList<>();
 
-//            List<CentroidDistance> synchronizedList = Collections.synchronizedList(distances);
-//
-//            System.out.println(currentClusterCount);
-//            mapData.entrySet().stream().forEach(map->{
-//                for (int j = map.getKey(); j < data.length; j++) {
-//                    if (mapData.get(j) == null) continue;
-////
-//                    double[][] data2 = mapData.get(j);
-//
-//
-//                    double distance = centroidLinkage(map.getValue(), data2);
-////                    double distance = 0;
-//                    synchronizedList.add(new CentroidDistance(distance,map.getKey(),j));
-//                }
-//            });
-
-
-            CentroidDistance minDistance = new CentroidDistance(Double.MAX_VALUE, -1,-1);
             for (int i = 0; i < data.length; i++) {
                 if (mapData.get(i) == null) continue;
 
                 for (int j = i+1; j < data.length; j++) {
                     if (mapData.get(j) == null) continue;
 
+                    futureCentroidDistances.add(new FutureCentroidDistance(centroids[i],centroids[j],i,j) {
+                        @Override
+                        public CentroidDistance call() throws Exception {
+                            double distance = centroidLinkage(centroids[i], centroids[j]);
+                            if (distance < minDistance[0].getDistance()){
+                                minDistance[0] = new CentroidDistance(distance,i,j);
+                            }
+                            return new CentroidDistance(distance, i,j);
+                        }
+                    });
 
-                    double distance = centroidLinkage(centroids[i], centroids[j]);
-                    if (distance < minDistance.getDistance()){
-                        minDistance = new CentroidDistance(distance,i,j);
-                    }
                 }
             }
 
+            executorService.invokeAll(futureCentroidDistances);
 
-            left = minDistance.getLeftCentroid();
-            right = minDistance.getRightCentroid();
+
+            left = minDistance[0].getLeftCentroid();
+            right = minDistance[0].getRightCentroid();
 
             int finalLeft = left;
             int finalRight = right;
-            if (minDistance.getLeftCentroid() < minDistance.getRightCentroid()){
+            if (minDistance[0].getLeftCentroid() < minDistance[0].getRightCentroid()){
                 double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
                 mapData.remove(right);
                 mapData.put(left, newData);
@@ -92,8 +83,86 @@ public class HierarchicalClustering {
             currentClusterCount--;
 
         }
+        executorService.shutdownNow();
         return selCentroids;
     }
+//    public static int[] dump1CentroidLinkageClustering(double[][] data, int numberOfClusters) throws IOException {
+//        int currentClusterCount = data.length;
+//        int[] selCentroids = new int[data.length];
+//        double[][] centroids = new double[data.length][];
+//        ExecutorService executorService;
+////        mtm = MultiThreadManager.getInstance();
+//
+//        Map<Integer, double[][]> mapData = new HashMap<>();
+//
+//        for (int i = 0; i < data.length; i++) {
+//            mapData.put(i, new double[][]{data[i]});
+//            selCentroids[i] = i;
+//            centroids[i] = data[i].clone();
+//        }
+//        List<Future<CentroidDistance>> distances = new ArrayList<>();
+//        while (currentClusterCount != numberOfClusters){
+//            executorService = Executors.newFixedThreadPool(3);
+//
+//            int left = -1;
+//            int right = -1;
+//
+//            final CentroidDistance[] minDistance = {new CentroidDistance(Double.MAX_VALUE, -1, -1)};
+//            for (int i = 0; i < data.length; i++) {
+//                if (mapData.get(i) == null) continue;
+//
+//                for (int j = i+1; j < data.length; j++) {
+//                    if (mapData.get(j) == null) continue;
+//                    executorService.execute(new FutureCentroidDistance(centroids[i], centroids[j],i,j) {
+//                        @Override
+//                        public void run() {
+//                            double distance = 0;
+//                            for (int i = 0; i < centroid1.length; i++) {
+//                                distance += Math.pow((centroid1[i] - centroid2[i]),2);
+//                            }
+////                            distance = new Math.sqrt()
+////                            return Math.sqrt(retval);
+//                            if (distance < minDistance[0].getDistance()){
+//                                minDistance[0] = new CentroidDistance(distance, i, j);
+//
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//            executorService.shutdown();
+//
+////            left = minDistance[0].getLeftCentroid();
+////            right = minDistance[0].getRightCentroid();
+////
+////            int finalLeft = left;
+////            int finalRight = right;
+//////            System.out.println(currentClusterCount);
+////
+////            if (left < right){
+////                double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
+////                mapData.remove(right);
+////                mapData.put(left, newData);
+////                selCentroids = Arrays
+////                        .stream(selCentroids).map(idx -> idx == finalRight ? finalLeft : idx)
+////                        .toArray();
+////                centroids[left] = Core.getCentroidsFromDouble(newData);
+////            }else{
+////                double[][] newData = Core.joinMultipleArray(mapData.get(right), mapData.get(left));
+////                mapData.remove(left);
+////                mapData.put(right, newData);
+////                selCentroids = Arrays
+////                        .stream(selCentroids).map(idx -> idx == finalLeft ? finalRight : idx)
+////                        .toArray();
+////                centroids[right] = Core.getCentroidsFromDouble(newData);
+////            }
+//
+//            currentClusterCount--;
+//
+//        }
+////        executorService.shutdown();
+//        return selCentroids;
+//    }
 
 //    public static int[] parallelHierarchicalClustering(double[][] datum, int numberOfClusters) throws IOException {
 //        MultiThreadManager mtm = MultiThreadManager.getInstance();
@@ -116,45 +185,6 @@ public class HierarchicalClustering {
 //                    int finalI = i;
 //                    int[] finalSelCentroids = selCentroids;
 //                    Double[][] data1 = IntStream.range(0, newData.length)
-//                            .filter(index -> finalSelCentroids[index] == finalI)
-//                            .mapToObj(index -> newData[index])
-//                            .toArray(Double[][]::new);
-//
-//                    int finalJ = j;
-//                    Double[][] data2 = IntStream.range(0, newData.length)
-//                            .filter(index -> finalSelCentroids[index] == finalJ)
-//                            .mapToObj(index -> newData[index])
-//                            .toArray(Double[][]::new);
-//
-//                    if (data1.length == 0 || data2.length == 0) continue;
-//
-//                    Future<Double> distance = centroidLinkage(data1, data2, mtm);
-//                    distances.add(new CentroidDistance(distance,i,j));
-//                }
-//            }
-//
-//            CentroidDistance minDistance = distances.parallelStream().min(Comparator.comparing(CentroidDistance::getDistance)).get();
-//            left = minDistance.getLeftCentroid();
-//            right = minDistance.getRightCentroid();
-//            if (minDistance.getLeftCentroid() < minDistance.getRightCentroid()){
-//                int finalRight = right;
-//                int finalLeft = left;
-//                selCentroids = Arrays
-//                        .stream(selCentroids).map(idx -> idx == finalRight ? finalLeft : idx)
-//                        .toArray();
-//            }else{
-//                int finalRight = right;
-//                int finalLeft = left;
-//                selCentroids = Arrays
-//                        .stream(selCentroids).map(idx -> idx == finalLeft ? finalRight : idx)
-//                        .toArray();
-//            }
-//            currentClusterCount--;
-//
-//        }
-//        mtm.close();
-//        return selCentroids;
-//    }
 
     private static double centroidLinkage(double[] centroid1, double[] centroid2) {
         double retval = 0;
@@ -194,7 +224,7 @@ public class HierarchicalClustering {
     }
 
     public int[] SingleLinkage(double[][] data, int NumberOfCluster) {
-        double[][] distanceMetric = new com.bayudwiyansatria.mat.Vector().getDistanceMetric(data);
+        double[][] distanceMetric = new Vector().getDistanceMetric(data);
         int[] clusters = new int[data.length];
         int length = data.length;
 
@@ -294,9 +324,9 @@ public class HierarchicalClustering {
     }
 
     public int[] CentroidLinkage(double[][] data, int NumberOfCluster) {
-        double[][] distanceMetric = new com.bayudwiyansatria.mat.Mat().getDistanceMetric(data);
+        double[][] distanceMetric = new Mat().getDistanceMetric(data);
         int[] clusters = new int[data.length];
-        double[][] newData = new com.bayudwiyansatria.mat.Mat().copyArray(data);
+        double[][] newData = new Mat().copyArray(data);
         int length = data.length;
 
         for(int i = 0; i < data.length; i++) {
@@ -320,8 +350,6 @@ public class HierarchicalClustering {
 
             int left;
             int right;
-
-
             if (clusters[x] < clusters[y]) {
                 left = clusters[y];
                 right = clusters[x];
@@ -375,7 +403,7 @@ public class HierarchicalClustering {
 
             for(y = 0; y < length; ++y) {
                 if (x != y) {
-                    double DistanceBetweenCentroid = new com.bayudwiyansatria.mat.Mat().getDistance(newData[x], newData[y]);
+                    double DistanceBetweenCentroid = new Mat().getDistance(newData[x], newData[y]);
 
                     for(int i = 0; i < nMember[x]; ++i) {
                         for(int j = 0; j < nMember[y]; ++j) {
@@ -404,8 +432,8 @@ public class HierarchicalClustering {
     }
 
     public int[] CompleteLinkage(double[][] data, int NumberOfCluster) {
-        double[][] distanceMetric = new com.bayudwiyansatria.mat.Mat().getDistanceMetric(data);
-        double[][] distanceTable = new com.bayudwiyansatria.mat.Mat().copyArray(distanceMetric);
+        double[][] distanceMetric = new Mat().getDistanceMetric(data);
+        double[][] distanceTable = new Mat().copyArray(distanceMetric);
         int[] clusters = new int[data.length];
         int length = data.length;
 
@@ -513,8 +541,8 @@ public class HierarchicalClustering {
     }
 
     public int[] AverageLinkage(double[][] data, int NumberOfCluster){
-        double[][] distanceMetric = new com.bayudwiyansatria.mat.Mat().getDistanceMetric(data);
-        double[][] distanceTable = new com.bayudwiyansatria.mat.Mat().copyArray(distanceMetric);
+        double[][] distanceMetric = new Mat().getDistanceMetric(data);
+        double[][] distanceTable = new Mat().copyArray(distanceMetric);
         int[] clusters = new int[data.length];
         int length = data.length;
 
@@ -623,7 +651,7 @@ public class HierarchicalClustering {
     }
 
     public int[] getNormalLabel(int[] clusters) {
-        int[] label = new com.bayudwiyansatria.mat.Mat().copyArray(clusters);
+        int[] label = new Mat().copyArray(clusters);
         int x = 0;
         int y = 0;
         int clusterCenter = -1;
