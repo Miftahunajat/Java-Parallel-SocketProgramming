@@ -69,7 +69,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         threadClients.forEach((integer, clientHandler) -> {
             updateClientStatus(integer, 0);
             clientHandler.status = 0;
-            clientHandler.stop();` `
+            clientHandler.stop();
         });
         try {
             serverSocket.close();
