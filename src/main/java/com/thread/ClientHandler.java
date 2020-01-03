@@ -60,7 +60,9 @@ public class ClientHandler extends Thread
     @Override
     public void run()
     {
-        while (status != 0) {}
+        while (status != 0) {
+            if (status == 0) System.out.println("tralalalalala");
+        }
     }
 
     public Double[][] sendTask(Double[][] mat1, Double[][] mat2) {
@@ -79,7 +81,7 @@ public class ClientHandler extends Thread
 
                 Double[][] hasil = null;
                 hasil = kryo.readObject(input, Double[][].class);
-                System.out.println("Client " + clientId + ": ");
+                System.out.println("Client " + clientId + ": " + hasil);
                 clientInteraction.onClientFinished(clientId);
                 return hasil;
             } catch (Exception e) {
@@ -107,18 +109,23 @@ public class ClientHandler extends Thread
 
                 Double hasil;
                 hasil = kryo.readObject(input, Double.class);
-                System.out.println("Client " + clientId + ": ");
+
+//                System.out.println("Client " + clientId + ": " + hasil);
                 clientInteraction.onClientFinished(clientId);
+                if (hasil == 0.0) System.out.println(hasil);
                 return hasil;
             } catch (Exception e) {
+                e.printStackTrace();
                 clientInteraction.onClientStopDistances(clientId, mat1, mat2);
-            } finally {
-                return 0;
+                return Double.MAX_VALUE;
             }
         }
 
     }
 
+    public void disconnect() {
+        kryo.writeObject(output, -1);
+    }
 
 
     interface ClientInteraction{

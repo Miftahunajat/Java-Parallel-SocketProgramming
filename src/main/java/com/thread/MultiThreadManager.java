@@ -46,7 +46,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
 
     private void awaitClient() {
         executorService.execute(() -> {
-            System.out.println("Waiting For Client number : " + lastClientId);
+            System.out.println("Connected Node : " + lastClientId);
             Socket socket = null;
             try {
                 socket = serverSocket.accept();
@@ -65,15 +65,19 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     public void close(){
-        executorService.shutdown();
+
         threadClients.forEach((integer, clientHandler) -> {
             updateClientStatus(integer, 0);
+            clientHandler.status = 0;
+            clientHandler.stop();` `
         });
         try {
             serverSocket.close();
         } catch (IOException e) {
             System.out.println("Connection Closed");
         }
+        executorService.shutdownNow();
+        instance = null;
 //        serverSocket.close();
     }
 
@@ -156,8 +160,9 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         }
         try {
             double results = VectorSpaceHelper.getDistances(mat1, mat2);
-            System.out.println("Server : 1");
-            serverComputeCount.incrementAndGet();
+//            System.out.println("Server : 1" + results);
+//            serverComputeCount.incrementAndGet();
+            if (results == 0.0) System.out.println(results);
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {
             e.printStackTrace();

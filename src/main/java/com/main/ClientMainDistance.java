@@ -19,9 +19,9 @@ public class ClientMainDistance {
         kryo = new Kryo();
         Output output;
         Input input;
+        int counter = 0;
         while (true){
             try {
-                int counter = 0;
                 InetAddress ip = InetAddress.getByName(Config.INET_ADDRESS_NAME);
                 Socket s = new Socket(ip, Config.PORT);
 
@@ -32,8 +32,9 @@ public class ClientMainDistance {
                 kryo.register(Double.class);
                 kryo.register(int.class);
 
-                while (true) {
-//                    System.out.println("waiting next line");
+                boolean connected = true;
+
+                while (connected) {
                     input = new Input(s.getInputStream());
                     counter++;
                     Object objData1;
@@ -81,7 +82,7 @@ public class ClientMainDistance {
 
 
 //            System.out.println(Arrays.deepToString(hasil));
-                    System.out.println("Counter = " + counter);
+
 //                    objectOutputStream.flush();
 
                 }
@@ -90,6 +91,8 @@ public class ClientMainDistance {
                 System.out.println("Server not found");
                 System.out.println("Reconnecting . . .");
                 Thread.sleep(5_000);
+            } finally {
+                System.out.println("Counter = " + counter);
             }
         }
     }

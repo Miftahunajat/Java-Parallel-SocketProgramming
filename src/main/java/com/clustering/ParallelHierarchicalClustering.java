@@ -14,7 +14,8 @@ public class ParallelHierarchicalClustering {
 
 //    static MultiThreadManager mtm;
 
-    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters) throws InterruptedException {
+    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters) throws InterruptedException, IOException {
+        MultiThreadManager mtm = MultiThreadManager.getInstance();
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         int currentClusterCount = data.length;
         int[] selCentroids = new int[data.length];
@@ -43,7 +44,16 @@ public class ParallelHierarchicalClustering {
                     futureCentroidDistances.add(new FutureCentroidDistance(centroids[i],centroids[j],i,j) {
                         @Override
                         public CentroidDistance call() throws Exception {
-                            double distance = centroidLinkage(centroids[i], centroids[j]);
+                            Double[] distMatrix = new Double[centroid1.length];
+                            Double[] distMatrixT = new Double[centroid1.length];
+                            for (int k = 0; k < distMatrix.length; k++) {
+                                distMatrix[k] = centroid1[k];
+                                distMatrixT[k] = centroid2[k];
+                            }
+                            double distance = mtm.getDistance(distMatrix, distMatrixT).get();
+//                            if (distance == 0.0)
+//                            System.out.println(distance);
+//                            double distance = Arrays.stream(result[0]).reduce(0.0, Double::sum);
                             if (distance < minDistance[0].getDistance()){
                                 minDistance[0] = new CentroidDistance(distance,i,j);
                             }
@@ -84,6 +94,7 @@ public class ParallelHierarchicalClustering {
 
         }
         executorService.shutdownNow();
+        mtm.close();
         return selCentroids;
     }
 //    public static int[] dump1CentroidLinkageClustering(double[][] data, int numberOfClusters) throws IOException {
