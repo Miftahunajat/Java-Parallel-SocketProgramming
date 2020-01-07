@@ -111,6 +111,12 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         updateClientStatus(clientId, 1);
     }
 
+    @Override
+    public void onClientStop(int clientId, Double[][] mat1) {
+        updateClientStatus(clientId, 0);
+        getDistanceMetric(mat1);
+    }
+
     public Future<Double[][]> startResult(Double[][] mat1, Double[][] mat2){
 //        boolean sent = false;
         for (int i = 0; i < clientStatuses.length(); i++) {
@@ -163,6 +169,38 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
 //            System.out.println("Server : 1" + results);
 //            serverComputeCount.incrementAndGet();
             if (results == 0.0) System.out.println(results);
+            return ConcurrentUtils.constantFuture(results);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Future<Double[]> getDistanceMetric(Double[][] substractsResult1) {
+        for (int i = 0; i < clientStatuses.length(); i++) {
+            if (clientStatuses.get(i) == 1) {
+//                sent = true;
+                clientComputeCount[i]++;
+                int finalI = i;
+                onCLientWorking(i);
+                return executorService.submit(new FutureDistanceMetric(substractsResult1) {
+                    @Override
+                    public Double[] call() {
+                        return threadClients.get(finalI).getDistanceMetricTask(mat1);
+//                        return null;
+                    }
+                });
+            }
+        }
+        try {
+            Double[] results = new Double[substractsResult1.length];
+            for (int j = 0; j < substractsResult1.length; j++) {
+                Double res = 0.0;
+                for (int k = 0; k < substractsResult1[j].length; k++) {
+                    res += substractsResult1[j][k]*substractsResult1[j][k];
+                }
+                results[j] = res;
+            }
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {
             e.printStackTrace();

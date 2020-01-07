@@ -4,18 +4,22 @@ import com.bayudwiyansatria.mat.Mat;
 import com.bayudwiyansatria.mat.Vector;
 import com.thread.MultiThreadManager;
 import com.util.Core;
+import com.util.VectorSpaceHelper;
+import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
-public class ParallelHierarchicalClustering {
+public class PGHierarchicalClustering {
 
-    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters) throws InterruptedException, IOException {
+    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters) throws Exception {
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         int currentClusterCount = data.length;
+
         int[] selCentroids = new int[data.length];
         double[][] centroids = new double[data.length][];
 
@@ -26,51 +30,100 @@ public class ParallelHierarchicalClustering {
             selCentroids[i] = i;
             centroids[i] = data[i].clone();
         }
+        int left;
+        int right;
+        right = currentClusterCount;
+        left = right;
         while (currentClusterCount != numberOfClusters){
-            int left;
-            int right;
 
-            final CentroidDistance[] minDistance = {new CentroidDistance(Double.MAX_VALUE, -1, -1)};
-            List<FutureCentroidDistance> futureCentroidDistances = new ArrayList<>();
 
+            List<Future<Double[][]>> futureCentroidDistances = new ArrayList<>();
+            int number = currentClusterCount;
             for (int i = 0; i < data.length; i++) {
-                if (mapData.get(i) == null) continue;
+                if (mapData.get(i) == null) {
+                    number++;
+                    continue;
+                }
 
+                double rangeI[] = new double[number - 1-i];
+                double dataCentroidsI[][] = new double[number - 1 - i][];
+                double rangeJ[] = new double[number - 1-i];
+                double dataCentroidsJ[][] = new double[number - 1 - i][];
+                int idx = 0;
                 for (int j = i+1; j < data.length; j++) {
                     if (mapData.get(j) == null) continue;
+                    rangeJ[idx] = j;
+                    dataCentroidsJ[idx] = centroids[j].clone();
+                    rangeI[idx] = i;
+                    dataCentroidsI[idx] = centroids[i].clone();
+                    idx++;
+                }
+                if (dataCentroidsI.length == 0) continue;
 
-                    futureCentroidDistances.add(new FutureCentroidDistance(centroids[i],centroids[j],i,j) {
-                        @Override
-                        public CentroidDistance call() throws Exception {
-                            Double[] distMatrix = new Double[centroid1.length];
-                            Double[] distMatrixT = new Double[centroid1.length];
-                            for (int k = 0; k < distMatrix.length; k++) {
-                                distMatrix[k] = centroid1[k];
-                                distMatrixT[k] = centroid2[k];
-                            }
-                            double distance = mtm.getDistance(distMatrix, distMatrixT).get();
-//                            if (distance == 0.0)
-//                            System.out.println(distance);
-//                            double distance = Arrays.stream(result[0]).reduce(0.0, Double::sum);
-                            if (distance < minDistance[0].getDistance()){
-                                minDistance[0] = new CentroidDistance(distance,i,j);
-                            }
-                            return new CentroidDistance(distance, i,j);
+                futureCentroidDistances.add(executorService.submit(new BatchFutureCentroidDistance(
+                        dataCentroidsI,dataCentroidsJ,rangeI,rangeJ
+                ){
+                    @Override
+                    public Double[][] call() throws Exception {
+                        Double[][] substractsResult = VectorSpaceHelper.substractTwoMatricesWrapper(this.dataRange1, this.dataRange2);
+                        Double[] distances = mtm.getDistanceMetric(substractsResult).get();
+                        Double[][] results = new Double[distances.length][];
+                        for (int i = 0; i < results.length; i++) {
+                            results[i] = new Double[]{distances[i], rangeI[i], rangeJ[i]};
+                        }
+//                        Double results[][] = new Double[substractsResult.length][];
+//                        for (int j = 0; j < substractsResult.length; j++) {
+//                            double res = 0;
+//                            for (int k = 0; k < substractsResult[j].length; k++) {
+//                                res += substractsResult[j][k]*substractsResult[j][k];
+//                            }
+//                            results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
+//                        }
+
+
+                        return results;
+                    }
+                }));
+
+            }
+            double[] distanceMin = new double[]{Double.MAX_VALUE, -1,-1};
+            futureCentroidDistances.stream().forEach( result ->{
+                try {
+                    Double[][] res = result.get();
+                    Arrays.stream(res).forEach(k->{
+                        if (k[0] < distanceMin[0]){
+                            distanceMin[0] = k[0];
+                            distanceMin[1] = k[1];
+                            distanceMin[2] = k[2];
                         }
                     });
 
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
-            }
+            });
 
-            executorService.invokeAll(futureCentroidDistances);
+//            executorService.invokeAll(futureCentroidDistances);
+//            futureCentroidDistances.stream().forEach(futureCentroidDistanceFuture -> {
+//                        try {
+//                            futureCentroidDistanceFuture.get();
+//                        } catch (InterruptedException | ExecutionException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//            );
 
 
-            left = minDistance[0].getLeftCentroid();
-            right = minDistance[0].getRightCentroid();
+
+//            left = minDistance[0].getLeftCentroid();
+//            right = minDistance[0].getRightCentroid();
+
+            left = (int) distanceMin[1];
+            right = (int) distanceMin[2];
 
             int finalLeft = left;
             int finalRight = right;
-            if (minDistance[0].getLeftCentroid() < minDistance[0].getRightCentroid()){
+            if (left < right){
                 double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
                 mapData.remove(right);
                 mapData.put(left, newData);

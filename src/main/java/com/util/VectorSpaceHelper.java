@@ -1,6 +1,38 @@
 package com.util;
 
 public class VectorSpaceHelper {
+
+    public static double[][] substractTwoMatrices(double[][] vector1, double[][] vector2) throws Exception {
+        if (vector1[0].length != vector2[0].length) throw new Exception("Dimensi Matrix Tidak Memenuhi");
+        if (vector1.length != vector2.length) throw new Exception("Dimensi Matrix Tidak Memenuhi");
+
+        double[][] results = new double[vector1.length][vector1[0].length];
+
+        for (int i = 0; i < results.length; i++) {
+            for (int j = 0; j < results[0].length; j++) {
+                results[i][j] = vector1[i][j] - vector2[i][j];
+            }
+        }
+
+        return results;
+    }
+
+    public static Double[][] substractTwoMatricesWrapper(double[][] vector1, double[][] vector2) throws Exception {
+        if (vector1[0].length != vector2[0].length) throw new Exception("Dimensi Matrix Tidak Memenuhi");
+        if (vector1.length != vector2.length) throw new Exception("Dimensi Matrix Tidak Memenuhi");
+
+        Double[][] results = new Double[vector1.length][vector1[0].length];
+
+        for (int i = 0; i < results.length; i++) {
+            for (int j = 0; j < results[0].length; j++) {
+                results[i][j] = vector1[i][j] - vector2[i][j];
+            }
+        }
+
+        return results;
+    }
+
+
     public static int[][] multiplyTwoMatrices(int[][] vector1, int[][] vector2) throws Exception {
         int sum = 0;
         int[][] results = new int[vector1.length][vector2[0].length];

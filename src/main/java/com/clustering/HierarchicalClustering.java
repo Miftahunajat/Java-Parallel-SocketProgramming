@@ -31,6 +31,7 @@ public class HierarchicalClustering {
         while (currentClusterCount != numberOfClusters){
             int left;
             int right;
+            System.out.println(currentClusterCount);
 
 
 //            List<CentroidDistance> synchronizedList = Collections.synchronizedList(distances);
