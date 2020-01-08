@@ -2,7 +2,7 @@ package com.thread;
 
 import java.util.concurrent.Callable;
 
-public abstract class FutureDistanceMetric implements Callable<Double[][]> {
+public abstract class FutureDistanceMetric implements Callable<Double[]> {
 
     protected double[][] mat1;
     protected double[][] mat2;

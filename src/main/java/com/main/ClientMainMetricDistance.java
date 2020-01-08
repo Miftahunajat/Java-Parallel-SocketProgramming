@@ -58,17 +58,15 @@ public class ClientMainMetricDistance {
                     for (Integer i = 0; i < firstLength; i++) {
                         data2[i] = kryo.readObject(input, double[].class);
                     }
-                    rangeI = kryo.readObject(input, double[].class);
-                    rangeJ = kryo.readObject(input, double[].class);
 
                     Double[][] substractsResult = VectorSpaceHelper.substractTwoMatricesWrapper(data1, data2);
-                    Double[][] hasil = new Double[substractsResult.length][];
+                    Double[] hasil = new Double[substractsResult.length];
                     for (int j = 0; j < substractsResult.length; j++) {
                         Double res = 0.0;
                         for (int k = 0; k < substractsResult[j].length; k++) {
                             res += substractsResult[j][k]*substractsResult[j][k];
                         }
-                        hasil[j] = new Double[]{res, rangeI[j], rangeJ[j]};
+                        hasil[j] = res;
                     }
 
 

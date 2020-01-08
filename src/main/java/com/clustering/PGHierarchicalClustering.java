@@ -67,10 +67,12 @@ public class PGHierarchicalClustering {
                 ){
                     @Override
                     public Double[][] call() throws Exception {
-                        Double[][] results = mtm.getDistanceMetric(
-                                this.dataRange1, this.dataRange2,
-                                rangeI, rangeJ
-                        ).get();
+
+                        Double[] distances = mtm.getDistanceMetric(this.dataRange1, this.dataRange2).get();
+                        Double[][] results = new Double[distances.length][];
+                        for (int i = 0; i < results.length; i++) {
+                            results[i] = new Double[]{distances[i], rangeI[i], rangeJ[i]};
+                        }
 //                        Double results[][] = new Double[substractsResult.length][];
 //                        for (int j = 0; j < substractsResult.length; j++) {
 //                            double res = 0;

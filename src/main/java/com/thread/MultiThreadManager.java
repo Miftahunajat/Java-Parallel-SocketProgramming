@@ -96,9 +96,9 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     @Override
-    public void onClientStop(int clientId, double[][] mat1, double[][] mat2, double[] rangeI, double[] rangeJ) {
+    public void onClientStop(int clientId, double[][] mat1, double[][] mat2) {
         updateClientStatus(clientId, 0);
-        getDistanceMetric(mat1, mat2, rangeI, rangeJ);
+        getDistanceMetric(mat1, mat2);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         return null;
     }
 
-    public Future<Double[][]> getDistanceMetric(double[][] dataRange1, double[][] dataRange2, double[] rangeI, double[] rangeJ) {
+    public Future<Double[]> getDistanceMetric(double[][] dataRange1, double[][] dataRange2) {
         for (int i = 0; i < clientStatuses.length(); i++) {
             if (clientStatuses.get(i) == 1) {
 //                sent = true;
@@ -185,10 +185,10 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 onCLientWorking(i);
                 return executorService.submit(new FutureDistanceMetric(dataRange1, dataRange2) {
                     @Override
-                    public Double[][] call() {
+                    public Double[] call() {
                         return threadClients.get(finalI).getDistanceMetricTask(
                                 mat1,
-                                mat2, rangeI, rangeJ);
+                                mat2);
 //                        return null;
                     }
                 });
@@ -196,13 +196,13 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         }
         try {
             Double[][] substractsResult = VectorSpaceHelper.substractTwoMatricesWrapper(dataRange1, dataRange2);
-            Double[][] results = new Double[substractsResult.length][];
+            Double[] results = new Double[substractsResult.length];
             for (int j = 0; j < substractsResult.length; j++) {
                 Double res = 0.0;
                 for (int k = 0; k < substractsResult[j].length; k++) {
                     res += substractsResult[j][k]*substractsResult[j][k];
                 }
-                results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
+                results[j] = res;
             }
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {

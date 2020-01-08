@@ -93,7 +93,7 @@ public class ClientHandler extends Thread
         }
     }
 
-    public Double[][] getDistanceMetricTask(double[][] mat1, double[][] mat2, double[] rangeI, double[] rangeJ) {
+    public Double[] getDistanceMetricTask(double[][] mat1, double[][] mat2) {
         synchronized (this) {
             try {
                 kryo.writeObject(output, mat1.length);
@@ -105,17 +105,15 @@ public class ClientHandler extends Thread
                 for (int i = 0; i < mat2.length; i++) {
                     kryo.writeObject(output, mat2[i]);
                 }
-                kryo.writeObject(output, rangeI);
-                kryo.writeObject(output, rangeJ);
 
                 output.flush();
 
-                Double[][] hasil = null;
-                hasil = kryo.readObject(input, Double[][].class);
+                Double[] hasil = null;
+                hasil = kryo.readObject(input, Double[].class);
                 clientInteraction.onClientFinished(clientId);
                 return hasil;
             } catch (Exception e) {
-                clientInteraction.onClientStop(clientId, mat1, mat2, rangeI, rangeJ);
+                clientInteraction.onClientStop(clientId, mat1, mat2);
                 return null;
             }
         }
@@ -158,7 +156,7 @@ public class ClientHandler extends Thread
 
     interface ClientInteraction{
         void onClientStop(int clientId, Double[][] mat1, Double[][] mat2);
-        void onClientStop(int clientId, double[][] mat1, double[][] mat2, double[] rangeI, double[] rangeJ);
+        void onClientStop(int clientId, double[][] mat1, double[][] mat2);
         void onClientStopDistances(int clientId, Double[] mat1, Double[] mat2);
         void onCLientWorking(int clientId);
         void onClientFinished(int clientId);
