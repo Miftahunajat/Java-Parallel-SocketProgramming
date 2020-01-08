@@ -83,6 +83,17 @@ public class Core {
         return retval;
     }
 
+    public static double[] joinMultipleArray(double[] left, double[] right){
+        double[] retval = new double[left.length + right.length];
+        for (int i = 0; i < left.length; i++) {
+            retval[i] = left[i];
+        }
+        for (int i = left.length; i<(left.length + right.length) ; i++){
+            retval[i] = right[i-left.length];
+        }
+        return retval;
+    }
+
     public static double[][] deepCopyIntMatrix(double[][] input) {
         if (input == null)
             return null;

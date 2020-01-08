@@ -1,9 +1,6 @@
 package com.main;
 
-import com.clustering.HierarchicalClustering;
-import com.clustering.KMeansClustering;
-import com.clustering.PGHierarchicalClustering;
-import com.clustering.ParallelHierarchicalClustering;
+import com.clustering.*;
 import com.thread.MultiThreadManager;
 import com.util.Core;
 import com.util.VectorSpaceHelper;

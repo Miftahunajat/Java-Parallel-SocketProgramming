@@ -96,6 +96,12 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     @Override
+    public void onClientStop(int clientId, double[][] mat1, double[][] mat2, double[] rangeI, double[] rangeJ) {
+        updateClientStatus(clientId, 0);
+        getDistanceMetric(mat1, mat2, rangeI, rangeJ);
+    }
+
+    @Override
     public void onClientStopDistances(int clientId, Double[] mat1, Double[] mat2) {
         updateClientStatus(clientId, 0);
         getDistance(mat1,mat2);
@@ -109,12 +115,6 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     @Override
     public void onClientFinished(int clientId) {
         updateClientStatus(clientId, 1);
-    }
-
-    @Override
-    public void onClientStop(int clientId, Double[][] mat1) {
-        updateClientStatus(clientId, 0);
-        getDistanceMetric(mat1);
     }
 
     public Future<Double[][]> startResult(Double[][] mat1, Double[][] mat2){
@@ -176,30 +176,33 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         return null;
     }
 
-    public Future<Double[]> getDistanceMetric(Double[][] substractsResult1) {
+    public Future<Double[][]> getDistanceMetric(double[][] dataRange1, double[][] dataRange2, double[] rangeI, double[] rangeJ) {
         for (int i = 0; i < clientStatuses.length(); i++) {
             if (clientStatuses.get(i) == 1) {
 //                sent = true;
                 clientComputeCount[i]++;
                 int finalI = i;
                 onCLientWorking(i);
-                return executorService.submit(new FutureDistanceMetric(substractsResult1) {
+                return executorService.submit(new FutureDistanceMetric(dataRange1, dataRange2) {
                     @Override
-                    public Double[] call() {
-                        return threadClients.get(finalI).getDistanceMetricTask(mat1);
+                    public Double[][] call() {
+                        return threadClients.get(finalI).getDistanceMetricTask(
+                                mat1,
+                                mat2, rangeI, rangeJ);
 //                        return null;
                     }
                 });
             }
         }
         try {
-            Double[] results = new Double[substractsResult1.length];
-            for (int j = 0; j < substractsResult1.length; j++) {
+            Double[][] substractsResult = VectorSpaceHelper.substractTwoMatricesWrapper(dataRange1, dataRange2);
+            Double[][] results = new Double[substractsResult.length][];
+            for (int j = 0; j < substractsResult.length; j++) {
                 Double res = 0.0;
-                for (int k = 0; k < substractsResult1[j].length; k++) {
-                    res += substractsResult1[j][k]*substractsResult1[j][k];
+                for (int k = 0; k < substractsResult[j].length; k++) {
+                    res += substractsResult[j][k]*substractsResult[j][k];
                 }
-                results[j] = res;
+                results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
             }
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {

@@ -28,6 +28,7 @@ public class ClientMainMetricDistance {
                 ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
                 output = new Output(s.getOutputStream());
+                kryo.register(double[].class);
                 kryo.register(Double[].class);
                 kryo.register(Double.class);
                 kryo.register(int.class);
@@ -39,22 +40,35 @@ public class ClientMainMetricDistance {
                     counter++;
                     //
                     Object objData1;
-                    Double[][] data1 = null;
+                    double[][] data1 = null;
+                    double[][] data2 = null;
+                    double[] rangeI = null;
+                    double[] rangeJ = null;
                     Integer firstLength = null;
+                    Integer secondLength = null;
 
                     firstLength = kryo.readObject(input, int.class);
-                    data1 = new Double[firstLength][];
+                    data1 = new double[firstLength][];
                     for (Integer i = 0; i < firstLength; i++) {
-                        data1[i] = kryo.readObject(input, Double[].class);
+                        data1[i] = kryo.readObject(input, double[].class);
                     }
 
-                    Double[] hasil = new Double[data1.length];
-                    for (int j = 0; j < data1.length; j++) {
+                    secondLength = kryo.readObject(input, int.class);
+                    data2 = new double[secondLength][];
+                    for (Integer i = 0; i < firstLength; i++) {
+                        data2[i] = kryo.readObject(input, double[].class);
+                    }
+                    rangeI = kryo.readObject(input, double[].class);
+                    rangeJ = kryo.readObject(input, double[].class);
+
+                    Double[][] substractsResult = VectorSpaceHelper.substractTwoMatricesWrapper(data1, data2);
+                    Double[][] hasil = new Double[substractsResult.length][];
+                    for (int j = 0; j < substractsResult.length; j++) {
                         Double res = 0.0;
-                        for (int k = 0; k < data1[j].length; k++) {
-                            res += data1[j][k]*data1[j][k];
+                        for (int k = 0; k < substractsResult[j].length; k++) {
+                            res += substractsResult[j][k]*substractsResult[j][k];
                         }
-                        hasil[j] = res;
+                        hasil[j] = new Double[]{res, rangeI[j], rangeJ[j]};
                     }
 
 

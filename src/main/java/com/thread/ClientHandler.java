@@ -35,6 +35,7 @@ public class ClientHandler extends Thread
         status = 1;
         kryo = new Kryo();
         kryo.register(Double[][].class);
+        kryo.register(double[].class);
         kryo.register(Double[].class);
         kryo.register(Double.class);
         kryo.register(int.class);
@@ -92,7 +93,7 @@ public class ClientHandler extends Thread
         }
     }
 
-    public Double[] getDistanceMetricTask(Double[][] mat1) {
+    public Double[][] getDistanceMetricTask(double[][] mat1, double[][] mat2, double[] rangeI, double[] rangeJ) {
         synchronized (this) {
             try {
                 kryo.writeObject(output, mat1.length);
@@ -100,14 +101,21 @@ public class ClientHandler extends Thread
                     kryo.writeObject(output, mat1[i]);
                 }
 
+                kryo.writeObject(output, mat2.length);
+                for (int i = 0; i < mat2.length; i++) {
+                    kryo.writeObject(output, mat2[i]);
+                }
+                kryo.writeObject(output, rangeI);
+                kryo.writeObject(output, rangeJ);
+
                 output.flush();
 
-                Double[] hasil = null;
-                hasil = kryo.readObject(input, Double[].class);
+                Double[][] hasil = null;
+                hasil = kryo.readObject(input, Double[][].class);
                 clientInteraction.onClientFinished(clientId);
                 return hasil;
             } catch (Exception e) {
-                clientInteraction.onClientStop(clientId, mat1);
+                clientInteraction.onClientStop(clientId, mat1, mat2, rangeI, rangeJ);
                 return null;
             }
         }
@@ -150,10 +158,11 @@ public class ClientHandler extends Thread
 
     interface ClientInteraction{
         void onClientStop(int clientId, Double[][] mat1, Double[][] mat2);
+        void onClientStop(int clientId, double[][] mat1, double[][] mat2, double[] rangeI, double[] rangeJ);
         void onClientStopDistances(int clientId, Double[] mat1, Double[] mat2);
         void onCLientWorking(int clientId);
         void onClientFinished(int clientId);
 
-        void onClientStop(int clientId, Double[][] mat1);
+//        void onClientStop(int clientId, Double[][] mat1);
     }
 }
