@@ -1,14 +1,10 @@
 package com.clustering;
 
-import com.bayudwiyansatria.mat.Mat;
-import com.sun.xml.internal.ws.addressing.WsaTubeHelperImpl;
-import com.thread.MultiThreadManager;
+
 import com.util.Core;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class KMeansClustering {
 
