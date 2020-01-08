@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass=com.main.ClientMetricDistance
+mvn exec:java -Dexec.mainClass=com.main.ClientMainMetricDistance
