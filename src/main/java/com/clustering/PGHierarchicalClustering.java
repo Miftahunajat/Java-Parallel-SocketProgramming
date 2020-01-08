@@ -62,30 +62,33 @@ public class PGHierarchicalClustering {
 
                 if (dataCentroidsI.length == 0) continue;
 
-                futureCentroidDistances.add(executorService.submit(new BatchFutureCentroidDistance(
-                        dataCentroidsI,dataCentroidsJ,rangeI,rangeJ
-                ){
-                    @Override
-                    public Double[][] call() throws Exception {
-
-                        Double[] distances = mtm.getDistanceMetric(this.dataRange1, this.dataRange2).get();
-                        Double[][] results = new Double[distances.length][];
-                        for (int i = 0; i < results.length; i++) {
-                            results[i] = new Double[]{distances[i], rangeI[i], rangeJ[i]};
-                        }
-//                        Double results[][] = new Double[substractsResult.length][];
-//                        for (int j = 0; j < substractsResult.length; j++) {
-//                            double res = 0;
-//                            for (int k = 0; k < substractsResult[j].length; k++) {
-//                                res += substractsResult[j][k]*substractsResult[j][k];
-//                            }
-//                            results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
+                futureCentroidDistances.add(
+                        mtm.getDistanceMetric(dataCentroidsI, dataCentroidsJ,rangeI,rangeJ)
+                );
+//                futureCentroidDistances.add(executorService.submit(new BatchFutureCentroidDistance(
+//                        dataCentroidsI,dataCentroidsJ,rangeI,rangeJ
+//                ){
+//                    @Override
+//                    public Double[][] call() throws Exception {
+//
+//                        Double[] distances = mtm.getDistanceMetric().get();
+//                        Double[][] results = new Double[distances.length][];
+//                        for (int i = 0; i < results.length; i++) {
+//                            results[i] = new Double[]{distances[i], rangeI[i], rangeJ[i]};
 //                        }
-
-
-                        return results;
-                    }
-                }));
+////                        Double results[][] = new Double[substractsResult.length][];
+////                        for (int j = 0; j < substractsResult.length; j++) {
+////                            double res = 0;
+////                            for (int k = 0; k < substractsResult[j].length; k++) {
+////                                res += substractsResult[j][k]*substractsResult[j][k];
+////                            }
+////                            results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
+////                        }
+//
+//
+//                        return results;
+//                    }
+//                }));
 
             }
             double[] distanceMin = new double[]{Double.MAX_VALUE, -1,-1};
