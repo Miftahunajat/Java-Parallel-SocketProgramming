@@ -1,5 +1,6 @@
 package com.main;
 
+import com.Config;
 import com.clustering.*;
 import com.thread.MultiThreadManager;
 import com.util.Core;
@@ -14,7 +15,7 @@ import java.util.stream.IntStream;
 public class Testing {
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
-        double[][] datas = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
+        double[][] datas = Core.readLargeCSV(Config.fileLocation);
         try {
             int[] results = PGHierarchicalClustering.centroidLinkageClustering(datas, 3);
             System.out.println(Arrays.toString(results));
