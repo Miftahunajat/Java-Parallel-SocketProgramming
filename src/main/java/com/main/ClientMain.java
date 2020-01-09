@@ -95,9 +95,10 @@ public class ClientMain {
                 connectException.printStackTrace();
                 System.out.println("Server not found");
                 System.out.println("Reconnecting . . .");
-                System.out.println("Counter = " + counter);
                 Thread.sleep(5_000);
 
+            } finally {
+                System.out.println("Counter = " + counter);
             }
         }
     }
