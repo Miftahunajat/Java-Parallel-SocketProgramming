@@ -5,7 +5,6 @@ import com.bayudwiyansatria.io.IO;
 import com.bayudwiyansatria.math.Math;
 
 import java.io.*;
-import java.util.Arrays;
 
 public class Core {
     private static Math math;
@@ -39,6 +38,27 @@ public class Core {
                 }
                 return item;
             }).toArray(double[][]::new);
+            return results;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Double[][] readLargeCSVWrapper(String filePath){
+        try {
+            File inputF = new File(filePath);
+            InputStream inputStream = new FileInputStream(inputF);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            Double[][] results = bufferedReader.lines().map(line -> {
+                String[] p = line.split(",");
+                Double[] item = new Double[p.length];
+                for (int i = 0; i < item.length; i++) {
+                    item[i] = Double.parseDouble(p[i]);
+                }
+                return item;
+            }).toArray(Double[][]::new);
             return results;
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -45,7 +45,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     private void awaitClient() {
-        executorService.execute(() -> {
+        new Thread(() -> {
             System.out.println("Connected Node : " + lastClientId);
             Socket socket = null;
             try {
@@ -61,7 +61,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
             } catch (IOException e) {
                 System.out.println("Connection Closed");
             }
-        });
+        }).start();
     }
 
     public void close(){
@@ -90,9 +90,14 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     @Override
-    public void onClientStop(int clientId, Double[][] mat1, Double[][] mat2) {
+    public void onClientStopStartResult(int clientId, double[][] mat1, double[][] mat2) {
         updateClientStatus(clientId, 0);
         startResult(mat1,mat2);
+    }
+
+    @Override
+    public void onClientStop(int clientId, double[][] mat1, double[][] mat2, double[] rangeI, double[] rangeJ) {
+
     }
 
     @Override
@@ -117,7 +122,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         updateClientStatus(clientId, 1);
     }
 
-    public Future<Double[][]> startResult(Double[][] mat1, Double[][] mat2){
+    public Future<Double[][]> startResult(double[][] mat1, double[][] mat2){
 //        boolean sent = false;
         for (int i = 0; i < clientStatuses.length(); i++) {
             if (clientStatuses.get(i) == 1){
@@ -136,8 +141,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
 //            if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
         }
         try {
-            Double[][] results = VectorSpaceHelper.multiplyTwoMatrices(mat1, mat2);
-            System.out.println("Server : 1");
+            Double[][] results = VectorSpaceHelper.multiplyTwoMatricesToWrapper(mat1, mat2);
             serverComputeCount.incrementAndGet();
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {

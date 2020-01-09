@@ -146,7 +146,7 @@ public class PGHierarchicalClustering {
             currentClusterCount--;
 
         }
-        executorService.shutdownNow();
+//        executorService.shutdownNow();
         mtm.close();
         return selCentroids;
     }

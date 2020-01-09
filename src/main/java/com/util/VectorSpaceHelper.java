@@ -93,6 +93,27 @@ public class VectorSpaceHelper {
         return results;
     }
 
+    public static Double[][] multiplyTwoMatricesToWrapper(double[][] vector1, double[][] vector2) throws Exception {
+        double sum = 0;
+        Double[][] results = new Double[vector1.length][vector2[0].length];
+
+
+
+        if (vector1[0].length != vector2.length) throw new Exception("Dimensi Matrix Tidak Memenuhi");
+        for (int i = 0; i < vector1.length; i++) {
+            for (int j = 0; j < vector2[0].length; j++) {
+                for (int k = 0; k < vector2.length; k++) {
+                    sum = sum + vector1[i][k] * vector2[k][j];
+                }
+
+                results[i][j] = sum;
+                sum = 0;
+            }
+        }
+
+        return results;
+    }
+
     public static Double[][] multiplyTwoMatrices(Double[][] vector1, Double[][] vector2) throws Exception {
         double sum = 0;
         Double[][] results = new Double[vector1.length][vector2[0].length];
