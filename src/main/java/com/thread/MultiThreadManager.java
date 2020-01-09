@@ -123,22 +123,27 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     public Future<Double[][]> startResult(Double[][] mat1, Double[][] mat2){
-//        boolean sent = false;
+        long start = System.currentTimeMillis();
         for (int i = 0; i < clientStatuses.length(); i++) {
             if (clientStatuses.get(i) == 1){
-//                sent = true;
                 clientComputeCount[i]++;
                 int finalI = i;
                 onCLientWorking(i);
                 return executorService.submit(new TaskFuture(mat1, mat2) {
                     @Override
                     public Double[][] call() {
-                        return threadClients.get(finalI).sendTask(mat1, mat2);
+                        Double[][] results = threadClients.get(finalI).sendTask(mat1, mat2);
+                        long finish = System.currentTimeMillis();
+                        long timeElapsed = finish - start;
+                        System.out.println("===========================");
+                        System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
+                        return results;
 //                        return null;
                     }
+
                 });
+
             }
-//            if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
         }
         try {
             Double[][] results = VectorSpaceHelper.multiplyTwoMatrices(mat1, mat2);
