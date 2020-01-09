@@ -24,8 +24,9 @@ public class ClientMain {
         Output output;
         Input input;
         while (true){
+            int counter = 0;
             try {
-                int counter = 0;
+
                 InetAddress ip = InetAddress.getByName(Config.INET_ADDRESS_NAME);
                 Socket s = new Socket(ip, Config.PORT);
 
@@ -86,7 +87,7 @@ public class ClientMain {
 
 
 //            System.out.println(Arrays.deepToString(hasil));
-                    System.out.println("Counter = " + counter);
+
 //                    objectOutputStream.flush();
 
                 }
@@ -94,7 +95,9 @@ public class ClientMain {
                 connectException.printStackTrace();
                 System.out.println("Server not found");
                 System.out.println("Reconnecting . . .");
+                System.out.println("Counter = " + counter);
                 Thread.sleep(5_000);
+
             }
         }
     }
