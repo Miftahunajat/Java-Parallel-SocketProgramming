@@ -3,6 +3,7 @@ package com.main;
 import com.thread.MultiThreadManager;
 import com.util.Core;
 import com.util.VectorSpaceHelper;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,9 @@ public class PerformaTestCalculation100 {
 //        System.out.println(Arrays.deepToString(irisData));
 
         long start = System.currentTimeMillis();
+        Double[][] mat1O = Arrays.stream(new com.bayudwiyansatria.mat.Mat().initArrayRandom(10,1000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
+        Double[][] mat2O = Arrays.stream(new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,10_000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
+
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         LinkedList<Future<Double[][]>> hasilKaliMatrix = new LinkedList<>();
 //        Future<Double[][]>[] hasilKaliMatrix = new Future[10_000];
@@ -29,7 +33,7 @@ public class PerformaTestCalculation100 {
 
         for (int i = 0; i < 100_000; i++) {
 //            mtm.startResult(s100Data, tS100Data);
-            mtm.startResult(s100Data, tS100Data).get();
+//            mtm.startResult(s100Data, tS100Data).get();
 //            hasilKaliMatrix.add();
 //            VectorSpaceHelper.multiplyTwoMatrices(s100Data, tS100Data);
         }

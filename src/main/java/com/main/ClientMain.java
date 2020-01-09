@@ -44,24 +44,24 @@ public class ClientMain {
                     counter++;
                     Object objData1;
                     Object objData2;
-                    double[][] data1 = null;
-                    double[][] data2 = null;
+                    Double[][] data1 = null;
+                    Double[][] data2 = null;
                     Integer firstLength = null;
                     Integer secondLength = null;
 
                     firstLength = kryo.readObject(input, int.class);
-                    data1 = new double[firstLength][];
+                    data1 = new Double[firstLength][];
                     for (Integer i = 0; i < firstLength; i++) {
-                        data1[i] = kryo.readObject(input, double[].class);
+                        data1[i] = kryo.readObject(input, Double[].class);
                     }
 
                     secondLength = kryo.readObject(input, int.class);
-                    data2 = new double[secondLength][];
+                    data2 = new Double[secondLength][];
                     for (Integer i = 0; i < secondLength; i++) {
-                        data2[i] = kryo.readObject(input, double[].class);
+                        data2[i] = kryo.readObject(input, Double[].class);
                     }
 
-                    Double[][] hasil = VectorSpaceHelper.multiplyTwoMatricesToWrapper(data1, data2);
+                    Double[][] hasil = VectorSpaceHelper.multiplyTwoMatrices(data1, data2);
 
                     int resultLength = hasil.length;
                     kryo.writeObject(output, hasil);

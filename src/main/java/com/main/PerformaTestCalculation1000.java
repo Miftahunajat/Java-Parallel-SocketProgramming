@@ -1,12 +1,15 @@
 package com.main;
 
-import com.Config;
 import com.thread.MultiThreadManager;
 import com.util.Core;
 import com.util.VectorSpaceHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class PerformaTestCalculation1000 {
     public static void main(String[] args) throws Exception {
@@ -18,11 +21,20 @@ public class PerformaTestCalculation1000 {
 
         long start = System.currentTimeMillis();
         MultiThreadManager mtm = MultiThreadManager.getInstance();
+        List<Future<Double[][]>> results = new ArrayList<>();
         // maincode
-        for (int i = 0; i < 100_000; i++) {
-            VectorSpaceHelper.multiplyTwoMatrices(s100Data, tS100Data);
-            mtm.startResult(s100Data, tS100Data).get();
+        for (int i = 0; i < 10; i++) {
+//            results.add(mtm.startResult(s100Data, tS100Data));
         }
+        System.out.println("finish");
+        results.forEach(c-> {
+            try {
+                c.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+
 
         mtm.close();
 //        MultiThreadManager mtm = MultiThreadManager.getInstance();

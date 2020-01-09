@@ -18,7 +18,7 @@ public class PerformaTestCalculation500 {
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         // maincode
         for (int i = 0; i < 100_000; i++) {
-            mtm.startResult(s100Data, tS100Data);
+//            mtm.startResult(s100Data, tS100Data);
 //            VectorSpaceHelper.multiplyTwoMatrices(s100Data, tS100Data);
         }
         mtm.close();
