@@ -6,6 +6,7 @@ import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -206,7 +207,6 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                             results[i] = new Double[]{distances[i], rangeI[i], rangeJ[i]};
                         }
                         return results;
-//                        return null;
                     }
                 });
             }
@@ -216,6 +216,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
             Double[][] results = new Double[substractsResult.length][];
             for (int j = 0; j < substractsResult.length; j++) {
                 Double res = 0.0;
+
                 for (int k = 0; k < substractsResult[j].length; k++) {
                     res += substractsResult[j][k]*substractsResult[j][k];
                 }

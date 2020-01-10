@@ -17,7 +17,6 @@ public class PGHierarchicalClustering {
 
     public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters) throws Exception {
         MultiThreadManager mtm = MultiThreadManager.getInstance();
-        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         int currentClusterCount = data.length;
 
         int[] selCentroids = new int[data.length];
@@ -67,7 +66,7 @@ public class PGHierarchicalClustering {
                         rangeI, rangeJ
                 ));
             }
-            double[] distanceMin = new double[]{Double.MAX_VALUE, -1,-1};
+            Double[] distanceMin = new Double[]{Double.MAX_VALUE, -1.0,-1.0};
             futureCentroidDistances.stream().forEach( result ->{
                 try {
                     Double[][] res = result.get();
@@ -99,8 +98,8 @@ public class PGHierarchicalClustering {
 //            left = minDistance[0].getLeftCentroid();
 //            right = minDistance[0].getRightCentroid();
 
-            left = (int) distanceMin[1];
-            right = (int) distanceMin[2];
+            left = distanceMin[1].intValue();
+            right = distanceMin[2].intValue();
 
             int finalLeft = left;
             int finalRight = right;

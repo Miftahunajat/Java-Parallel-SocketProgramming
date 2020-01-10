@@ -6,6 +6,7 @@ import com.bayudwiyansatria.math.Math;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.List;
 
 public class Core {
     private static Math math;
@@ -136,5 +137,13 @@ public class Core {
             result[r] = input[r].clone();
         }
         return result;
+    }
+
+    public static Double[][] convertListArrayToDouble(List<Double[]> doubles) {
+        Double[][] retVal = new Double[doubles.size()][];
+        for (int i = 0; i < doubles.size(); i++) {
+            retVal[i] = doubles.get(i);
+        }
+        return retVal;
     }
 }

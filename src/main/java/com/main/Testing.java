@@ -17,7 +17,7 @@ public class Testing {
         long start = System.currentTimeMillis();
         Double[][] datas = Core.readLargeCSVWrapper(Config.fileLocation);
         try {
-            int[] results = PGHierarchicalClustering.centroidLinkageClustering(datas, 3);
+            int[] results = PG2HierarchicalClustering.centroidLinkageClustering(datas, 3);
             System.out.println(Arrays.toString(results));
         } catch (Exception e) {
             e.printStackTrace();
