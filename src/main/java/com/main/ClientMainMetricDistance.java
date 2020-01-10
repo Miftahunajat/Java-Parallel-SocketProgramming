@@ -38,12 +38,9 @@ public class ClientMainMetricDistance {
                 while (connected) {
                     input = new Input(s.getInputStream());
                     counter++;
-                    //
                     Object objData1;
                     Double[][] data1 = null;
                     Double[][] data2 = null;
-//                    double[] rangeI = null;
-//                    double[] rangeJ = null;
                     Integer firstLength = null;
                     Integer secondLength = null;
 
@@ -74,28 +71,11 @@ public class ClientMainMetricDistance {
                     kryo.writeObject(output, hasil);
                     output.flush();
 
-//                    data1 = kryo.readObject(input, Double[][].class);
-//                    System.out.println("read 1");
-//                    System.out.println(Arrays.deepToString(data1));
-//                    input = new Input(s.getInputStream());
-//                    secondLength = (Integer) objectInputStream.readObject();
-//                    data2 = new Double[secondLength][];
-//                    for (Integer i = 0; i < secondLength; i++) {
-//                        data2[i] = (Double[]) objectInputStream.readObject();
-//                    }
-//                    data2 = kryo.readObject(input, Double[][].class);
-//                    System.out.println("read 2");
-//                    System.out.println(Arrays.deepToString(data2));
-//                    input.close();
-
-//                    System.out.println(Arrays.deepToString(hasil));
-
-//                    objectOutputStream.writeObject(hasil);
 
 
-//            System.out.println(Arrays.deepToString(hasil));
 
-//                    objectOutputStream.flush();
+
+
 
                 }
             }catch (ConnectException connectException){

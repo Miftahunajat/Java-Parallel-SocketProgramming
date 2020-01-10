@@ -31,7 +31,6 @@ public class ServerMain {
 
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         for (int i = 0; i < 25; i++) {
-//            VectorSpaceHelper.multiplyTwoMatrices(mat1O, mat2O);
             hasilPerhitungan.add(mtm.startResult(mat1O, mat2O));
         }
         hasilPerhitungan.forEach(a -> {

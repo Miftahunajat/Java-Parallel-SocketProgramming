@@ -156,6 +156,7 @@ public class ClientHandler extends Thread
 
     interface ClientInteraction{
         void onClientStop(int clientId, Double[][] mat1, Double[][] mat2);
+        void onClientStopHandler(int clientId, Double[][] mat1, Double[][] mat2, Double[] rangeI, Double[] rangeJ);
 //        void onClientStop(int clientId, Double[][] mat1, Double[][] mat2);
         void onClientStopStartResult(int clientId, Double[][] mat1, Double[][] mat2);
         void onClientStop(int clientId, double[][] mat1, double[][] mat2, double[] rangeI, double[] rangeJ);
