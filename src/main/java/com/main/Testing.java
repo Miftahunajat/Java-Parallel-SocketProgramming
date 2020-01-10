@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 public class Testing {
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
-        double[][] datas = Core.readLargeCSV(Config.fileLocation);
+        Double[][] datas = Core.readLargeCSVWrapper(Config.fileLocation);
         try {
             int[] results = PGHierarchicalClustering.centroidLinkageClustering(datas, 3);
             System.out.println(Arrays.toString(results));

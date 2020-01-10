@@ -5,6 +5,7 @@ import com.bayudwiyansatria.io.IO;
 import com.bayudwiyansatria.math.Math;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class Core {
     private static Math math;
@@ -83,8 +84,10 @@ public class Core {
         Double[] retval = new Double[data[0].length];
         for (int i = 0; i < data[0].length; i++) {
             double counter = 0;
+            retval[i] = 0.0;
             for (int j = 0; j < data.length; j++) {
-                retval[i]+=data[j][i];
+//                System.out.println(i + " " + Arrays.toString(data[0]));
+                retval[i]= retval[i] + data[j][i];
                 counter++;
             }
             retval[i] = retval[i] / counter;
@@ -94,6 +97,17 @@ public class Core {
 
     public static double[][] joinMultipleArray(double[][] left, double[][] right){
         double[][] retval = new double[left.length + right.length][];
+        for (int i = 0; i < left.length; i++) {
+            retval[i] = left[i].clone();
+        }
+        for (int i = left.length; i<(left.length + right.length) ; i++){
+            retval[i] = right[i-left.length].clone();
+        }
+        return retval;
+    }
+
+    public static Double[][] joinMultipleArray(Double[][] left, Double[][] right){
+        Double[][] retval = new Double[left.length + right.length][];
         for (int i = 0; i < left.length; i++) {
             retval[i] = left[i].clone();
         }

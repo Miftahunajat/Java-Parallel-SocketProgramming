@@ -15,18 +15,18 @@ import java.util.stream.Collectors;
 
 public class PGHierarchicalClustering {
 
-    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters) throws Exception {
+    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters) throws Exception {
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         int currentClusterCount = data.length;
 
         int[] selCentroids = new int[data.length];
-        double[][] centroids = new double[data.length][];
+        Double[][] centroids = new Double[data.length][];
 
-        Map<Integer, double[][]> mapData = new HashMap<>();
+        Map<Integer, Double[][]> mapData = new HashMap<>();
 
         for (int i = 0; i < data.length; i++) {
-            mapData.put(i, new double[][]{data[i]});
+            mapData.put(i, new Double[][]{data[i]});
             selCentroids[i] = i;
             centroids[i] = data[i].clone();
         }
@@ -45,16 +45,16 @@ public class PGHierarchicalClustering {
                     continue;
                 }
 
-                double rangeI[] = new double[number - 1-i];
-                double dataCentroidsI[][] = new double[number - 1 - i][];
-                double rangeJ[] = new double[number - 1-i];
-                double dataCentroidsJ[][] = new double[number - 1 - i][];
+                Double rangeI[] = new Double[number - 1-i];
+                Double dataCentroidsI[][] = new Double[number - 1 - i][];
+                Double rangeJ[] = new Double[number - 1-i];
+                Double dataCentroidsJ[][] = new Double[number - 1 - i][];
                 int idx = 0;
                 for (int j = i+1; j < data.length; j++) {
                     if (mapData.get(j) == null) continue;
-                    rangeJ[idx] = j;
+                    rangeJ[idx] = (double) j;
                     dataCentroidsJ[idx] = centroids[j].clone();
-                    rangeI[idx] = i;
+                    rangeI[idx] = (double) i;
                     dataCentroidsI[idx] = centroids[i].clone();
                     idx++;
                 }
@@ -126,7 +126,7 @@ public class PGHierarchicalClustering {
             int finalLeft = left;
             int finalRight = right;
             if (left < right){
-                double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
+                Double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
                 mapData.remove(right);
                 mapData.put(left, newData);
                 selCentroids = Arrays
@@ -134,7 +134,7 @@ public class PGHierarchicalClustering {
                         .toArray();
                 centroids[left] = Core.getCentroidsFromDouble(newData);
             }else{
-                double[][] newData = Core.joinMultipleArray(mapData.get(right), mapData.get(left));
+                Double[][] newData = Core.joinMultipleArray(mapData.get(right), mapData.get(left));
                 mapData.remove(left);
                 mapData.put(right, newData);
                 selCentroids = Arrays

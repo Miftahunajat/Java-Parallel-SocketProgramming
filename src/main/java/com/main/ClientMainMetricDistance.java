@@ -40,26 +40,26 @@ public class ClientMainMetricDistance {
                     counter++;
                     //
                     Object objData1;
-                    double[][] data1 = null;
-                    double[][] data2 = null;
-                    double[] rangeI = null;
-                    double[] rangeJ = null;
+                    Double[][] data1 = null;
+                    Double[][] data2 = null;
+//                    double[] rangeI = null;
+//                    double[] rangeJ = null;
                     Integer firstLength = null;
                     Integer secondLength = null;
 
                     firstLength = kryo.readObject(input, int.class);
-                    data1 = new double[firstLength][];
+                    data1 = new Double[firstLength][];
                     for (Integer i = 0; i < firstLength; i++) {
-                        data1[i] = kryo.readObject(input, double[].class);
+                        data1[i] = kryo.readObject(input, Double[].class);
                     }
 
                     secondLength = kryo.readObject(input, int.class);
-                    data2 = new double[secondLength][];
+                    data2 = new Double[secondLength][];
                     for (Integer i = 0; i < firstLength; i++) {
-                        data2[i] = kryo.readObject(input, double[].class);
+                        data2[i] = kryo.readObject(input, Double[].class);
                     }
 
-                    Double[][] substractsResult = VectorSpaceHelper.substractTwoMatricesWrapper(data1, data2);
+                    Double[][] substractsResult = VectorSpaceHelper.substractTwoMatrices(data1, data2);
                     Double[] hasil = new Double[substractsResult.length];
                     for (int j = 0; j < substractsResult.length; j++) {
                         Double res = 0.0;

@@ -101,7 +101,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     }
 
     @Override
-    public void onClientStop(int clientId, double[][] mat1, double[][] mat2) {
+    public void onClientStop(int clientId, Double[][] mat1, Double[][] mat2) {
         updateClientStatus(clientId, 0);
         getDistanceMetric(mat1, mat2);
     }
@@ -180,7 +180,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         return null;
     }
 
-    public Future<Double[]> getDistanceMetric(double[][] dataRange1, double[][] dataRange2) {
+    public Future<Double[]> getDistanceMetric(Double[][] dataRange1, Double[][] dataRange2) {
         for (int i = 0; i < clientStatuses.length(); i++) {
             if (clientStatuses.get(i) == 1) {
 //                sent = true;
@@ -199,7 +199,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
             }
         }
         try {
-            Double[][] substractsResult = VectorSpaceHelper.substractTwoMatricesWrapper(dataRange1, dataRange2);
+            Double[][] substractsResult = VectorSpaceHelper.substractTwoMatrices(dataRange1, dataRange2);
             Double[] results = new Double[substractsResult.length];
             for (int j = 0; j < substractsResult.length; j++) {
                 Double res = 0.0;
