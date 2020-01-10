@@ -66,12 +66,20 @@ public class PG2HierarchicalClustering {
             Double[][] dataCentroidsI;
             Double[] rangeJ = new Double[0];;
             Double[][] dataCentroidsJ;
-            for (int i = 1; i <= 4; i++) {
-                rangeI = oldRangeI.subList(startIndex, len * i / 4).toArray(rangeI);
-                dataCentroidsI = Core.convertListArrayToDouble(oldDataCentroidsI.subList(startIndex, len * i / 4));
-                rangeJ = oldRangeJ.subList(startIndex, len * i / 4).toArray(rangeJ);
-                dataCentroidsJ = Core.convertListArrayToDouble(oldDataCentroidsJ.subList(startIndex, len * i / 4));
-                startIndex = len * i / 4;
+            if (len > Config.MAX_MATRIX_COUNT) {
+                for (int i = 1; i <= 4; i++) {
+                    rangeI = oldRangeI.subList(startIndex, len * i / 4).toArray(rangeI);
+                    dataCentroidsI = Core.convertListArrayToDouble(oldDataCentroidsI.subList(startIndex, len * i / 4));
+                    rangeJ = oldRangeJ.subList(startIndex, len * i / 4).toArray(rangeJ);
+                    dataCentroidsJ = Core.convertListArrayToDouble(oldDataCentroidsJ.subList(startIndex, len * i / 4));
+                    startIndex = len * i / 4;
+                    futureCentroidDistances.add(mtm.getDistanceMetric(dataCentroidsI, dataCentroidsJ, rangeI, rangeJ));
+                }
+            } else {
+                rangeI = oldRangeI.toArray(rangeI);
+                dataCentroidsI = Core.convertListArrayToDouble(oldDataCentroidsI);
+                rangeJ = oldRangeJ.toArray(rangeJ);
+                dataCentroidsJ = Core.convertListArrayToDouble(oldDataCentroidsJ);
                 futureCentroidDistances.add(mtm.getDistanceMetric(dataCentroidsI, dataCentroidsJ, rangeI, rangeJ));
             }
 
