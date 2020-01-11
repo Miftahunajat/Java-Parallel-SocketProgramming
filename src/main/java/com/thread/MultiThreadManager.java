@@ -196,16 +196,25 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 clientComputeCount[i]++;
                 int finalI = i;
                 onCLientWorking(i);
-                return executorService.submit(new FutureDistanceMetric(dataRange1, dataRange2) {
+                return executorService.submit(new FutureDistanceMetric(dataRange1, dataRange2, rangeI, rangeJ) {
                     @Override
                     public Double[][] call() {
+//                        long start = System.currentTimeMillis();
                         Double[] distances = threadClients.get(finalI).getDistanceMetricTask(
                                 mat1,
                                 mat2);
-                        Double[][] results = new Double[distances.length][];
+                        Double[][] results = new Double[distances.length][3];
                         for (int i = 0; i < results.length; i++) {
-                            results[i] = new Double[]{distances[i], rangeI[i], rangeJ[i]};
+                            results[i][0] = distances[i];
+                            results[i][1] = this.rangeI[i];
+                            results[i][2] = this.rangeJ[i];
                         }
+//                        long finish = System.currentTimeMillis();
+
+
+//                        long timeElapsed = finish - start;
+//                        System.out.println("=========================== CLient");
+//                        System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
                         return results;
                     }
                 });
@@ -222,6 +231,31 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 }
                 results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
             }
+            return ConcurrentUtils.constantFuture(results);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Future<Double[][]> getDistanceMetricMain(Double[][] dataRange1, Double[][] dataRange2, Double[] rangeI, Double[] rangeJ) {
+        try {
+//            long start = System.currentTimeMillis();
+            Double[][] substractsResult = VectorSpaceHelper.substractTwoMatrices(dataRange1, dataRange2);
+            Double[][] results = new Double[substractsResult.length][];
+            for (int j = 0; j < substractsResult.length; j++) {
+                Double res = 0.0;
+
+                for (int k = 0; k < substractsResult[j].length; k++) {
+                    res += substractsResult[j][k]*substractsResult[j][k];
+                }
+                results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
+            }
+
+//            long finish = System.currentTimeMillis();
+//            long timeElapsed = finish - start;
+//            System.out.println("=========================== CLient");
+//            System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {
             e.printStackTrace();

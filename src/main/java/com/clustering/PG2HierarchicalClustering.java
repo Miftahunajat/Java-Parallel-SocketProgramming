@@ -37,8 +37,6 @@ public class PG2HierarchicalClustering {
         right = currentClusterCount;
         left = right;
         while (currentClusterCount != numberOfClusters) {
-
-
             List<Future<Double[][]>> futureCentroidDistances = new ArrayList<>();
             List<Double> oldRangeI = new ArrayList<>();
             List<Double[]> oldDataCentroidsI = new ArrayList<>();
@@ -66,13 +64,15 @@ public class PG2HierarchicalClustering {
             Double[][] dataCentroidsI;
             Double[] rangeJ = new Double[0];;
             Double[][] dataCentroidsJ;
-            if (len > Config.MAX_MATRIX_COUNT) {
-                for (int i = 1; i <= 4; i++) {
-                    rangeI = oldRangeI.subList(startIndex, len * i / 4).toArray(rangeI);
-                    dataCentroidsI = Core.convertListArrayToDouble(oldDataCentroidsI.subList(startIndex, len * i / 4));
-                    rangeJ = oldRangeJ.subList(startIndex, len * i / 4).toArray(rangeJ);
-                    dataCentroidsJ = Core.convertListArrayToDouble(oldDataCentroidsJ.subList(startIndex, len * i / 4));
-                    startIndex = len * i / 4;
+            int divider = 10;
+//            System.out.println(len/divider);
+            if (len / divider > Config.MAX_MATRIX_COUNT) {
+                for (int i = 1; i <= divider; i++) {
+                    rangeI = oldRangeI.subList(startIndex, len * i / divider).toArray(rangeI);
+                    dataCentroidsI = Core.convertListArrayToDouble(oldDataCentroidsI.subList(startIndex, len * i / divider));
+                    rangeJ = oldRangeJ.subList(startIndex, len * i / divider).toArray(rangeJ);
+                    dataCentroidsJ = Core.convertListArrayToDouble(oldDataCentroidsJ.subList(startIndex, len * i / divider));
+                    startIndex = len * i / divider;
                     futureCentroidDistances.add(mtm.getDistanceMetric(dataCentroidsI, dataCentroidsJ, rangeI, rangeJ));
                 }
             } else {
@@ -80,7 +80,7 @@ public class PG2HierarchicalClustering {
                 dataCentroidsI = Core.convertListArrayToDouble(oldDataCentroidsI);
                 rangeJ = oldRangeJ.toArray(rangeJ);
                 dataCentroidsJ = Core.convertListArrayToDouble(oldDataCentroidsJ);
-                futureCentroidDistances.add(mtm.getDistanceMetric(dataCentroidsI, dataCentroidsJ, rangeI, rangeJ));
+                futureCentroidDistances.add(mtm.getDistanceMetricMain(dataCentroidsI, dataCentroidsJ, rangeI, rangeJ));
             }
 
             double[] distanceMin = new double[]{Double.MAX_VALUE, -1, -1};
