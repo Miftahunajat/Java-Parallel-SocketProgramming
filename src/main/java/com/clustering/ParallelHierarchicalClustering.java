@@ -8,21 +8,20 @@ import com.util.Core;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ParallelHierarchicalClustering {
 
-    public static int[] centroidLinkageClustering(double[][] data, int numberOfClusters) throws InterruptedException, IOException {
+    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters) throws InterruptedException, IOException {
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         int currentClusterCount = data.length;
         int[] selCentroids = new int[data.length];
-        double[][] centroids = new double[data.length][];
+        Double[][] centroids = new Double[data.length][];
 
-        Map<Integer, double[][]> mapData = new HashMap<>();
+        Map<Integer, Double[][]> mapData = new HashMap<>();
 
         for (int i = 0; i < data.length; i++) {
-            mapData.put(i, new double[][]{data[i]});
+            mapData.put(i, new Double[][]{data[i]});
             selCentroids[i] = i;
             centroids[i] = data[i].clone();
         }
@@ -53,9 +52,9 @@ public class ParallelHierarchicalClustering {
 //                            System.out.println(distance);
 //                            double distance = Arrays.stream(result[0]).reduce(0.0, Double::sum);
                             if (distance < minDistance[0].getDistance()){
-                                minDistance[0] = new CentroidDistance(distance,i,j);
+                                minDistance[0] = new CentroidDistance(distance, left, right);
                             }
-                            return new CentroidDistance(distance, i,j);
+                            return new CentroidDistance(distance, left, right);
                         }
                     });
 
@@ -71,7 +70,7 @@ public class ParallelHierarchicalClustering {
             int finalLeft = left;
             int finalRight = right;
             if (minDistance[0].getLeftCentroid() < minDistance[0].getRightCentroid()){
-                double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
+                Double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
                 mapData.remove(right);
                 mapData.put(left, newData);
                 selCentroids = Arrays
@@ -79,7 +78,7 @@ public class ParallelHierarchicalClustering {
                         .toArray();
                 centroids[left] = Core.getCentroidsFromDouble(newData);
             }else{
-                double[][] newData = Core.joinMultipleArray(mapData.get(right), mapData.get(left));
+                Double[][] newData = Core.joinMultipleArray(mapData.get(right), mapData.get(left));
                 mapData.remove(left);
                 mapData.put(right, newData);
                 selCentroids = Arrays

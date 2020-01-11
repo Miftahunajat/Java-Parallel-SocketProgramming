@@ -1,24 +1,22 @@
 package com.clustering;
 
+import com.Config;
 import com.bayudwiyansatria.mat.Mat;
 import com.bayudwiyansatria.mat.Vector;
 import com.thread.MultiThreadManager;
 import com.util.Core;
-import com.util.VectorSpaceHelper;
-import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
-public class PGHierarchicalClustering {
+public class PG3HierarchicalClustering {
 
-    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters) throws Exception {
+    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters) throws InterruptedException, IOException {
+        ExecutorService ex = Executors.newFixedThreadPool(1);
         MultiThreadManager mtm = MultiThreadManager.getInstance();
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         int currentClusterCount = data.length;
-
         int[] selCentroids = new int[data.length];
         Double[][] centroids = new Double[data.length][];
 
@@ -29,80 +27,47 @@ public class PGHierarchicalClustering {
             selCentroids[i] = i;
             centroids[i] = data[i].clone();
         }
-        int left;
-        int right;
-        right = currentClusterCount;
-        left = right;
-
         while (currentClusterCount != numberOfClusters){
-            List<Future<Double[][]>> futureCentroidDistances = new ArrayList<>();
-            int number = currentClusterCount;
-            for (int i = 0; i < data.length; i++) {
-                if (mapData.get(i) == null) {
-                    number++;
-                    continue;
-                }
+            int left;
+            int right;
 
-                Double rangeI[] = new Double[number - 1-i];
-                Double dataCentroidsI[][] = new Double[number - 1 - i][];
-                Double rangeJ[] = new Double[number - 1-i];
-                Double dataCentroidsJ[][] = new Double[number - 1 - i][];
-                int idx = 0;
+//            final CentroidDistance[] minDistance = {new CentroidDistance(Double.MAX_VALUE, -1, -1)};
+            List<Future<CentroidDistance>> futureCentroidDistances = new ArrayList<>();
+
+            for (int i = 0; i < data.length; i++) {
+                if (mapData.get(i) == null) continue;
+
                 for (int j = i+1; j < data.length; j++) {
                     if (mapData.get(j) == null) continue;
-                    rangeJ[idx] = (double) j;
-                    dataCentroidsJ[idx] = centroids[j].clone();
-                    rangeI[idx] = (double) i;
-                    dataCentroidsI[idx] = centroids[i].clone();
-                    idx++;
+
+                    if (mapData.size() > Config.MAX_LIMIT) {
+                        futureCentroidDistances.add(mtm.getCentroidDistance(centroids[i], centroids[j], i, j));
+                    }else{
+                        futureCentroidDistances.add(mtm.getCentroidDistanceMain(centroids[i], centroids[j], i, j));
+                    }
                 }
-
-
-                if (dataCentroidsI.length == 0) continue;
-
-                futureCentroidDistances.add(mtm.getDistanceMetric(
-                        dataCentroidsI, dataCentroidsJ,
-                        rangeI, rangeJ
-                ));
             }
-            Double[] distanceMin = new Double[]{Double.MAX_VALUE, -1.0,-1.0};
-            futureCentroidDistances.stream().forEach( result ->{
-                try {
-                    Double[][] res = result.get();
-                    Arrays.stream(res).forEach(k->{
-                        if (k[0] < distanceMin[0]){
-                            distanceMin[0] = k[0];
-                            distanceMin[1] = k[1];
-                            distanceMin[2] = k[2];
-                        }
-                    });
 
+//            double[] distanceMin = new double[]{Double.MAX_VALUE, -1, -1};
+            final CentroidDistance[] distanceMin = {new CentroidDistance(Double.MAX_VALUE, -1, -1)};
+            futureCentroidDistances.forEach(result -> {
+                try {
+                    CentroidDistance res = result.get();
+                    if (res.getDistance() < distanceMin[0].getDistance()) {
+                        distanceMin[0] = res;
+                    }
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             });
 
-//            executorService.invokeAll(futureCentroidDistances);
-//            futureCentroidDistances.stream().forEach(futureCentroidDistanceFuture -> {
-//                        try {
-//                            futureCentroidDistanceFuture.get();
-//                        } catch (InterruptedException | ExecutionException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//            );
-//
 
-
-//            left = minDistance[0].getLeftCentroid();
-//            right = minDistance[0].getRightCentroid();
-
-            left = distanceMin[1].intValue();
-            right = distanceMin[2].intValue();
+            left = distanceMin[0].getLeftCentroid();
+            right = distanceMin[0].getRightCentroid();
 
             int finalLeft = left;
             int finalRight = right;
-            if (left < right){
+            if (distanceMin[0].getLeftCentroid() < distanceMin[0].getRightCentroid()){
                 Double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
                 mapData.remove(right);
                 mapData.put(left, newData);
@@ -123,7 +88,7 @@ public class PGHierarchicalClustering {
             currentClusterCount--;
 
         }
-//        executorService.shutdownNow();
+        executorService.shutdownNow();
         mtm.close();
         return selCentroids;
     }

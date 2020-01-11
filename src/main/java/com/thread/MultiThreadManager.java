@@ -1,5 +1,7 @@
 package com.thread;
 
+import com.clustering.CentroidDistance;
+import com.clustering.FutureCentroidDistance;
 import com.util.VectorSpaceHelper;
 import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 
@@ -186,6 +188,37 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         return null;
     }
 
+    public Future<CentroidDistance> getCentroidDistance(Double[] mat1, Double[] mat2, int left, int right){
+//        boolean sent = false;
+        for (int i = 0; i < clientStatuses.length(); i++) {
+            if (clientStatuses.get(i) == 1){
+//                sent = true;
+                clientComputeCount[i]++;
+                int finalI = i;
+                onCLientWorking(i);
+                return executorService.submit(new FutureCentroidDistance(mat1, mat2,left, right) {
+                    @Override
+                    public CentroidDistance call() {
+                        return new CentroidDistance(threadClients.get(finalI).getDistanceTask(mat1, mat2), left,right);
+//                        return null;
+                    }
+                });
+            }
+//            if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
+        }
+        try {
+            double results = VectorSpaceHelper.getDistances(mat1, mat2);
+//            System.out.println("Server : 1" + results);
+//            serverComputeCount.incrementAndGet();
+            if (results == 0.0) System.out.println(results);
+            CentroidDistance centroidDistance = new CentroidDistance(results, left, right);
+            return ConcurrentUtils.constantFuture(centroidDistance);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public Future<Double[][]> getDistanceMetric(
             Double[][] dataRange1, Double[][] dataRange2,
             Double[] rangeI, Double[] rangeJ
@@ -257,6 +290,20 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
 //            System.out.println("=========================== CLient");
 //            System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
             return ConcurrentUtils.constantFuture(results);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Future<CentroidDistance> getCentroidDistanceMain(Double[] mat1, Double[] mat2, int left, int right){
+        try {
+            double results = VectorSpaceHelper.getDistances(mat1, mat2);
+//            System.out.println("Server : 1" + results);
+//            serverComputeCount.incrementAndGet();
+            if (results == 0.0) System.out.println(results);
+            CentroidDistance centroidDistance = new CentroidDistance(results, left, right);
+            return ConcurrentUtils.constantFuture(centroidDistance);
         } catch (Exception e) {
             e.printStackTrace();
         }

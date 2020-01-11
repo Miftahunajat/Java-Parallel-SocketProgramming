@@ -5,6 +5,7 @@ public class Config {
 //    public static final String INET_ADDRESS_NAME = "localhost";
     public static final int MAX_MATRIX_COUNT = 25_000;
     public static final int MAX_MATRIX_COMBINATION = 499_500;
+    public static final int MAX_LIMIT = 1000;
     public static final int PORT = 4031;
     public static final int MAX_CLIENT = 8;
     public static final int DIVIDER = 20;
