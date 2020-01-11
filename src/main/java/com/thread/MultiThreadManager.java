@@ -88,7 +88,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         return clientStatuses;
     }
 
-    public synchronized void updateClientStatus(int clientId, int status){
+    public void updateClientStatus(int clientId, int status){
         clientStatuses.set(clientId, status);
     }
 
@@ -236,13 +236,14 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                         Double[] distances = threadClients.get(finalI).getDistanceMetricTask(
                                 mat1,
                                 mat2);
+                        long finish = System.currentTimeMillis();
+
                         Double[][] results = new Double[distances.length][3];
                         for (int i = 0; i < results.length; i++) {
                             results[i][0] = distances[i];
                             results[i][1] = this.rangeI[i];
                             results[i][2] = this.rangeJ[i];
                         }
-//                        long finish = System.currentTimeMillis();
 
 
 //                        long timeElapsed = finish - start;
@@ -254,6 +255,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
             }
         }
         try {
+//            long start = System.currentTimeMillis();
             Double[][] substractsResult = VectorSpaceHelper.substractTwoMatrices(dataRange1, dataRange2);
             Double[][] results = new Double[substractsResult.length][];
             for (int j = 0; j < substractsResult.length; j++) {
@@ -264,6 +266,10 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 }
                 results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
             }
+//            long finish = System.currentTimeMillis();
+//            long timeElapsed = finish - start;
+//            System.out.println("=========================== PUsat");
+//            System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {
             e.printStackTrace();
