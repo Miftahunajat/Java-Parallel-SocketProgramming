@@ -32,7 +32,6 @@ public class PerformaTestCalculation100 {
         // maincode
 
         for (int i = 0; i < 20; i++) {
-
 //            mtm.startResult(s100Data, tS100Data).get();
             hasilKaliMatrix.add(mtm.startResult(mat1O, mat2O));
 //            VectorSpaceHelper.multiplyTwoMatrices(s100Data, tS100Data);
@@ -60,6 +59,8 @@ public class PerformaTestCalculation100 {
         long timeElapsed = finish - start;
         System.out.println("===========================");
         System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
+        System.out.println(mtm.serverComputeCount);
+        System.out.println(Arrays.toString(mtm.clientComputeCount));
     }
 
 }

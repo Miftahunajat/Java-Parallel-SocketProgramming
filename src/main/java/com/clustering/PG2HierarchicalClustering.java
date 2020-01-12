@@ -129,6 +129,8 @@ public class PG2HierarchicalClustering {
         }
         executorService.shutdownNow();
         mtm.close();
+        System.out.println("Server Count : " + mtm.serverComputeCount);
+        System.out.println("Client Count : " + Arrays.toString(mtm.clientComputeCount));
         return selCentroids;
     }
 }

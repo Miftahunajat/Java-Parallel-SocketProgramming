@@ -141,14 +141,14 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 return executorService.submit(new TaskFuture(mat1, mat2) {
                     @Override
                     public Double[][] call() {
-                        long start = System.currentTimeMillis();
+//                        long start = System.currentTimeMillis();
 
                         Double[][] hasil = threadClients.get(finalI).sendTask(mat1, mat2);
 
-                        long finish = System.currentTimeMillis();
-                        long timeElapsed = finish - start;
-                        System.out.println("=========================== CLient");
-                        System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
+//                        long finish = System.currentTimeMillis();
+//                        long timeElapsed = finish - start;
+//                        System.out.println("=========================== CLient");
+//                        System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
                         return hasil;
 //                        return null;
                     }
@@ -157,13 +157,13 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
 //            if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
         }
         try {
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             Double[][] results = VectorSpaceHelper.multiplyTwoMatrices(mat1, mat2);
-            long finish = System.currentTimeMillis();
-            long timeElapsed = finish - start;
-            System.out.println("=========================== Server");
-            System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
-//            serverComputeCount.incrementAndGet();
+//            long finish = System.currentTimeMillis();
+//            long timeElapsed = finish - start;
+//            System.out.println("=========================== Server");
+//            System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
+            serverComputeCount.incrementAndGet();
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {
             e.printStackTrace();
@@ -245,7 +245,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 return executorService.submit(new FutureDistanceMetric(dataRange1, dataRange2, rangeI, rangeJ) {
                     @Override
                     public Double[][] call() {
-                        long start = System.currentTimeMillis();
+//                        long start = System.currentTimeMillis();
                         Double[] distances = threadClients.get(finalI).getDistanceMetricTask(
                                 mat1,
                                 mat2);
@@ -259,16 +259,16 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                         }
 
 
-                        long timeElapsed = finish - start;
-                        System.out.println("=========================== CLient");
-                        System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
+//                        long timeElapsed = finish - start;
+//                        System.out.println("=========================== CLient");
+//                        System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
                         return results;
                     }
                 });
             }
         }
         try {
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             Double[][] substractsResult = VectorSpaceHelper.substractTwoMatrices(dataRange1, dataRange2);
             Double[][] results = new Double[substractsResult.length][];
             for (int j = 0; j < substractsResult.length; j++) {
@@ -279,12 +279,12 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 }
                 results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
             }
-            Thread.sleep(48);
+            Thread.sleep(36);
 
             long finish = System.currentTimeMillis();
-            long timeElapsed = finish - start;
-            System.out.println("=========================== PUsat");
-            System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
+//            long timeElapsed = finish - start;
+//            System.out.println("=========================== PUsat");
+//            System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {
             e.printStackTrace();
