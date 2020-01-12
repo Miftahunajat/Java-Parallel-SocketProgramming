@@ -90,19 +90,10 @@ public class ClientHandler extends Thread
     public Double[][] sendTask(Double[][] mat1, Double[][] mat2) {
         synchronized (this) {
             try {
-                kryo.writeObject(output, mat1.length);
-                for (int i = 0; i < mat1.length; i++) {
-                    kryo.writeObject(output, mat1[i]);
-                }
+                ThreadUtil.writeObjectToStream(dataOutputStream, mat1);
+                ThreadUtil.writeObjectToStream(dataOutputStream, mat2);
+                Double[][] hasil = (Double[][]) ThreadUtil.readObjectFromStream(dataInputStream);
 
-                kryo.writeObject(output, mat2.length);
-                for (int i = 0; i < mat2.length; i++) {
-                    kryo.writeObject(output, mat2[i]);
-                }
-                output.flush();
-
-                Double[][] hasil = null;
-                hasil = kryo.readObject(input, Double[][].class);
 //                System.out.println("Client " + clientId + ": " + hasil);
                 clientInteraction.onClientFinished(clientId);
                 return hasil;

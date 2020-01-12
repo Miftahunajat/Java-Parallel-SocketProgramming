@@ -31,10 +31,10 @@ public class PerformaTestCalculation100 {
 //        Future<Double[][]>[] hasilKaliMatrix = new Future[10_000];
         // maincode
 
-        for (int i = 0; i < 100_000; i++) {
-//            mtm.startResult(s100Data, tS100Data);
+        for (int i = 0; i < 20; i++) {
+
 //            mtm.startResult(s100Data, tS100Data).get();
-//            hasilKaliMatrix.add();
+            hasilKaliMatrix.add(mtm.startResult(mat1O, mat2O));
 //            VectorSpaceHelper.multiplyTwoMatrices(s100Data, tS100Data);
         }
         hasilKaliMatrix.stream().map(s -> {

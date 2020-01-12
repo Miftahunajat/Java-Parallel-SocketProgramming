@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.util.Core;
 import com.util.StringVector;
+import com.util.ThreadUtil;
 import com.util.VectorSpaceHelper;
 
 import java.io.*;
@@ -30,8 +31,8 @@ public class ClientMain {
                 InetAddress ip = InetAddress.getByName(Config.INET_ADDRESS_NAME);
                 Socket s = new Socket(ip, Config.PORT);
 
-                ObjectInputStream objectInputStream = new ObjectInputStream(s.getInputStream());
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(s.getOutputStream());
+                DataInputStream dataInputStream = new DataInputStream(s.getInputStream());
+                DataOutputStream dataOutputStream = new DataOutputStream(s.getOutputStream());
                 output = new Output(s.getOutputStream());
                 kryo.register(Double[][].class);
                 kryo.register(Double[].class);
@@ -49,23 +50,27 @@ public class ClientMain {
                     Integer firstLength = null;
                     Integer secondLength = null;
 
-                    firstLength = kryo.readObject(input, int.class);
-                    data1 = new Double[firstLength][];
-                    for (Integer i = 0; i < firstLength; i++) {
-                        data1[i] = kryo.readObject(input, Double[].class);
-                    }
+                    data1 = (Double[][]) ThreadUtil.readObjectFromStream(dataInputStream);
+                    data2 = (Double[][]) ThreadUtil.readObjectFromStream(dataInputStream);
 
-                    secondLength = kryo.readObject(input, int.class);
-                    data2 = new Double[secondLength][];
-                    for (Integer i = 0; i < secondLength; i++) {
-                        data2[i] = kryo.readObject(input, Double[].class);
-                    }
+//                    firstLength = kryo.readObject(input, int.class);
+//                    data1 = new Double[firstLength][];
+//                    for (Integer i = 0; i < firstLength; i++) {
+//                        data1[i] = kryo.readObject(input, Double[].class);
+//                    }
+
+//                    secondLength = kryo.readObject(input, int.class);
+//                    data2 = new Double[secondLength][];
+//                    for (Integer i = 0; i < secondLength; i++) {
+//                        data2[i] = kryo.readObject(input, Double[].class);
+//                    }
 
                     Double[][] hasil = VectorSpaceHelper.multiplyTwoMatrices(data1, data2);
 
-                    int resultLength = hasil.length;
-                    kryo.writeObject(output, hasil);
-                    output.flush();
+//                    int resultLength = hasil.length;
+                    ThreadUtil.writeObjectToStream(dataOutputStream, hasil);
+//                    kryo.writeObject(output, hasil);
+//                    output.flush();
 
 //                    data1 = kryo.readObject(input, Double[][].class);
 //                    System.out.println("read 1");

@@ -141,7 +141,15 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 return executorService.submit(new TaskFuture(mat1, mat2) {
                     @Override
                     public Double[][] call() {
-                        return threadClients.get(finalI).sendTask(mat1, mat2);
+                        long start = System.currentTimeMillis();
+
+                        Double[][] hasil = threadClients.get(finalI).sendTask(mat1, mat2);
+
+                        long finish = System.currentTimeMillis();
+                        long timeElapsed = finish - start;
+                        System.out.println("=========================== CLient");
+                        System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
+                        return hasil;
 //                        return null;
                     }
                 });
@@ -149,7 +157,12 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
 //            if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
         }
         try {
+            long start = System.currentTimeMillis();
             Double[][] results = VectorSpaceHelper.multiplyTwoMatrices(mat1, mat2);
+            long finish = System.currentTimeMillis();
+            long timeElapsed = finish - start;
+            System.out.println("=========================== Server");
+            System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
 //            serverComputeCount.incrementAndGet();
             return ConcurrentUtils.constantFuture(results);
         } catch (Exception e) {
@@ -266,6 +279,8 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
                 }
                 results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
             }
+            Thread.sleep(48);
+
             long finish = System.currentTimeMillis();
             long timeElapsed = finish - start;
             System.out.println("=========================== PUsat");
