@@ -55,7 +55,7 @@ public class PG2HierarchicalClustering {
                     oldDataCentroidsI.add(centroids[i].clone());
                     oldDataCentroidsJ.add(centroids[j].clone());
                 }
-            }
+             }
 
             int startIndex = 0;
             int len = oldDataCentroidsI.size();

@@ -108,6 +108,7 @@ public class Core {
     }
 
     public static Double[][] joinMultipleArray(Double[][] left, Double[][] right){
+        //Makek SYstem arraycopy
         Double[][] retval = new Double[left.length + right.length][];
         for (int i = 0; i < left.length; i++) {
             retval[i] = left[i].clone();

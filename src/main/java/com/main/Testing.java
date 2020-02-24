@@ -15,9 +15,9 @@ import java.util.stream.IntStream;
 public class Testing {
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
-        Double[][] datas = Core.readLargeCSVWrapper(Config.fileLocation);
+        double[][] datas = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
         try {
-            int[] results = PG2HierarchicalClustering.centroidLinkageClustering(datas, 3);
+            int[] results = new BayuHierarchical().CentroidLinkage(datas, 3);
             System.out.println(Arrays.toString(results));
         } catch (Exception e) {
             e.printStackTrace();
