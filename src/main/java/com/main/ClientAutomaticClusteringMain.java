@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 public class ClientAutomaticClusteringMain {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-        double[][] datas = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
+        double[][] datas = Core.readLargeCSV(Config.fileLocation);
         int counter = 0;
         while (true){
             try {

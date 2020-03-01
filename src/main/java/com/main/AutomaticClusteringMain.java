@@ -1,5 +1,6 @@
 package com.main;
 
+import com.Config;
 import com.automatic.AutomaticClustering;
 import com.clustering.BayuHierarchical;
 import com.clustering.ParallelHierarchicalClustering;
@@ -11,7 +12,7 @@ import java.util.Arrays;
 public class AutomaticClusteringMain {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        double[][] datas = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
+        double[][] datas = Core.readLargeCSV(Config.fileLocation);
         try {
             int[] results = new AutomaticClustering().parallelHierarchicalAutomaticClustering(datas, 10);
 //            int[] results = SerialHierarchicalClustering.centroidLinkageClustering(datas, 10);
