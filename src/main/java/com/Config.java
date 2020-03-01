@@ -11,4 +11,5 @@ public class Config {
     public static final int DIVIDER = 5;
     public static long checkDuration = 5000;
     public static final String fileLocation = "src/main/resources/ruspini.csv";
+    public static final int INTERVAL = 15;
 }
