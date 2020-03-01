@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass=com.main.Testing
+mvn exec:java -Dexec.mainClass=com.main.AutomaticClusteringMain

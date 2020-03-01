@@ -3,6 +3,7 @@ package com.thread;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.model.ClusterAndVariance;
 import com.util.ThreadUtil;
 import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.FSTObjectInput;
@@ -155,6 +156,24 @@ public class ClientHandler extends Thread
         kryo.writeObject(output, -1);
     }
 
+    public ClusterAndVariance getClusterAndVariance(int x) {
+        synchronized (this) {
+            try {
+                ThreadUtil.writeObjectToStream(dataOutputStream, x);
+                int[] cluster = (int[]) ThreadUtil.readObjectFromStream(dataInputStream);
+                double[] variances = (double[]) ThreadUtil.readObjectFromStream(dataInputStream);
+
+                ClusterAndVariance hasil = new ClusterAndVariance(cluster, variances);
+
+                clientInteraction.onClientFinished(clientId);
+                return hasil;
+            } catch (Exception e) {
+                clientInteraction.onClientStopStartResult(clientId, x);
+            }
+        }
+        return null;
+    }
+
 
     interface ClientInteraction{
         void onClientStop(int clientId, Double[][] mat1, Double[][] mat2);
@@ -165,6 +184,8 @@ public class ClientHandler extends Thread
         void onClientStopDistances(int clientId, Double[] mat1, Double[] mat2);
         void onCLientWorking(int clientId);
         void onClientFinished(int clientId);
+
+        void onClientStopStartResult(int clientId, int x);
 
 //        void onClientStop(int clientId, Double[][] mat1);
     }

@@ -3,6 +3,7 @@ package com.main;
 import com.automatic.AutomaticClustering;
 import com.clustering.BayuHierarchical;
 import com.clustering.ParallelHierarchicalClustering;
+import com.clustering.SerialHierarchicalClustering;
 import com.util.Core;
 
 import java.util.Arrays;
@@ -12,8 +13,8 @@ public class AutomaticClusteringMain {
         long start = System.currentTimeMillis();
         double[][] datas = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
         try {
-//            int[] results = new AutomaticClustering().hierarchicalAutomaticClustering(datas, 50);
-            int[] results = new BayuHierarchical().CentroidLinkage(datas, 10);
+            int[] results = new AutomaticClustering().parallelHierarchicalAutomaticClustering(datas, 10);
+//            int[] results = SerialHierarchicalClustering.centroidLinkageClustering(datas, 10);
             System.out.println(Arrays.toString(results));
         } catch (Exception e) {
             e.printStackTrace();

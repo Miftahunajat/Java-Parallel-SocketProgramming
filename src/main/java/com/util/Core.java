@@ -97,24 +97,31 @@ public class Core {
     }
 
     public static double[][] joinMultipleArray(double[][] left, double[][] right){
-        double[][] retval = new double[left.length + right.length][];
+        double[][] retval = new double[left.length + right.length][left[0].length];
         for (int i = 0; i < left.length; i++) {
-            retval[i] = left[i].clone();
+//            retval[i] = left[i].clone();
+            System.arraycopy(left[i], 0, retval[i], 0, left[i].length);
+
         }
         for (int i = left.length; i<(left.length + right.length) ; i++){
-            retval[i] = right[i-left.length].clone();
+//            retval[i] = right[i-left.length].clone();
+            System.arraycopy(right[i-left.length], 0, retval[i], 0, right[i-left.length].length);
         }
         return retval;
     }
 
     public static Double[][] joinMultipleArray(Double[][] left, Double[][] right){
         //Makek SYstem arraycopy
-        Double[][] retval = new Double[left.length + right.length][];
+        Double[][] retval = new Double[left.length + right.length][left[0].length];
         for (int i = 0; i < left.length; i++) {
-            retval[i] = left[i].clone();
+//            retval[i] = left[i].clone();
+//            retval[i] = new Double[left[i].length];
+            System.arraycopy(left[i], 0, retval[i], 0, left[i].length);
         }
         for (int i = left.length; i<(left.length + right.length) ; i++){
-            retval[i] = right[i-left.length].clone();
+//            retval[i] = right[i-left.length].clone();
+//            retval[i] = new Double[right[i-left.length].length];
+            System.arraycopy(right[i-left.length], 0, retval[i], 0, right[i-left.length].length);
         }
         return retval;
     }

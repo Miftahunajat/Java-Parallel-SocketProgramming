@@ -78,6 +78,14 @@ public class VectorSpaceHelper {
         return Math.sqrt(retval);
     }
 
+    public static double getDistances(double[] vector1, double[] vector2) {
+        double retval = 0;
+        for (int i = 0; i < vector1.length; i++) {
+            retval += Math.pow((vector1[i] - vector2[i]),2);
+        }
+        return Math.sqrt(retval);
+    }
+
     public static double[] multiplyTwoMatrices(double[] vector1, double[] vector2) throws Exception {
         int sum = 0;
         if (vector1.length != vector2.length) throw new Exception("Dimensi Matrix Tidak Memenuhi");

@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass=com.main.ClientMainMetricDistance
+mvn exec:java -Dexec.mainClass=com.main.ClientAutomaticClusteringMain

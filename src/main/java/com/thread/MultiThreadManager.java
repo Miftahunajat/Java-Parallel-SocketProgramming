@@ -2,6 +2,10 @@ package com.thread;
 
 import com.clustering.CentroidDistance;
 import com.clustering.FutureCentroidDistance;
+import com.clustering.ML;
+import com.clustering.SerialHierarchicalClustering;
+import com.model.ClusterAndVariance;
+import com.model.ClusterAndVarianceFuture;
 import com.util.VectorSpaceHelper;
 import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 
@@ -33,6 +37,8 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     public AtomicInteger serverComputeCount = new AtomicInteger();
     public AtomicInteger temp = new AtomicInteger();
     public int[] clientComputeCount = new int[MAX_CLIENT];
+
+    private double[][] dataset;
 
     private MultiThreadManager() throws IOException {
         executorService = Executors.newFixedThreadPool(10);
@@ -128,6 +134,11 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
     @Override
     public void onClientFinished(int clientId) {
         updateClientStatus(clientId, 1);
+    }
+
+    @Override
+    public void onClientStopStartResult(int clientId, int x) {
+        sendClusters(this.dataset, x);
     }
 
     public Future<Double[][]> startResult(Double[][] mat1, Double[][] mat2){
@@ -325,6 +336,34 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
             if (results == 0.0) System.out.println(results);
             CentroidDistance centroidDistance = new CentroidDistance(results, left, right);
             return ConcurrentUtils.constantFuture(centroidDistance);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Future<ClusterAndVariance> sendClusters(double[][] data, int x) {
+        //        boolean sent = false;
+        for (int i = 0; i < clientStatuses.length(); i++) {
+            if (clientStatuses.get(i) == 1){
+//                sent = true;
+                clientComputeCount[i]++;
+                int finalI = i;
+                onCLientWorking(i);
+                return executorService.submit(new ClusterAndVarianceFuture(){
+                    @Override
+                    public ClusterAndVariance call() throws Exception {
+                        return threadClients.get(finalI).getClusterAndVariance(x);
+                    }
+                });
+            }
+//            if ( i == clientStatuses.length() - 1) temp.incrementAndGet();
+        }
+        try {
+            int[] clustersResult = SerialHierarchicalClustering.pCentroidLinkageClustering(data,x);
+            double[] variance = new ML().getVariance(data, clustersResult);
+            ClusterAndVariance clusterAndVariance = new ClusterAndVariance(clustersResult, variance);
+            return ConcurrentUtils.constantFuture(clusterAndVariance);
         } catch (Exception e) {
             e.printStackTrace();
         }
