@@ -12,7 +12,6 @@ public class AutomaticClusteringMain {
         double[][] datas = Core.readLargeCSV(Config.fileLocation);
         try {
             int[] results = new AutomaticClustering().parallelHierarchicalAutomaticClustering(datas, Config.INTERVAL);
-//            int[] results = SerialHierarchicalClustering.centroidLinkageClustering(datas, 10);
             System.out.println(Arrays.toString(results));
         } catch (Exception e) {
             e.printStackTrace();
