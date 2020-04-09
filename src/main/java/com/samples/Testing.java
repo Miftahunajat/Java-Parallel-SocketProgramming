@@ -1,16 +1,9 @@
-package com.main;
+package com.samples;
 
-import com.Config;
 import com.clustering.*;
-import com.thread.MultiThreadManager;
 import com.util.Core;
-import com.util.VectorSpaceHelper;
-import sun.security.ssl.HandshakeInStream;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.IntStream;
 
 public class Testing {
     public static void main(String[] args) throws Exception {

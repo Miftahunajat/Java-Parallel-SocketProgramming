@@ -1,26 +1,39 @@
-package com.main;
+package com.samples;
 
 import com.thread.MultiThreadManager;
 import com.util.Core;
-import com.util.VectorSpaceHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-public class PerformaTestCalculation500 {
+public class PerformaTestCalculation1000 {
     public static void main(String[] args) throws Exception {
         double[][] irisData = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
 
-        double[][] s100Data = Arrays.copyOfRange(irisData, 0,500);
+        double[][] s100Data = Arrays.copyOfRange(irisData, 0,100);
         double[][] tS100Data = new com.bayudwiyansatria.mat.Mat().transposeMatrix(s100Data);
 //        System.out.println(Arrays.deepToString(irisData));
 
         long start = System.currentTimeMillis();
         MultiThreadManager mtm = MultiThreadManager.getInstance();
+        List<Future<Double[][]>> results = new ArrayList<>();
         // maincode
-        for (int i = 0; i < 100_000; i++) {
-//            mtm.startResult(s100Data, tS100Data);
-//            VectorSpaceHelper.multiplyTwoMatrices(s100Data, tS100Data);
+        for (int i = 0; i < 10; i++) {
+//            results.add(mtm.startResult(s100Data, tS100Data));
         }
+        System.out.println("finish");
+        results.forEach(c-> {
+            try {
+                c.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+
+
         mtm.close();
 //        MultiThreadManager mtm = MultiThreadManager.getInstance();
 

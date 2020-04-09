@@ -1,17 +1,12 @@
-package com.main;
+package com.samples;
 
 import com.thread.MultiThreadManager;
 import com.util.Core;
-import com.util.VectorSpaceHelper;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Future;
 
 public class PerformaTestCalculation100 {

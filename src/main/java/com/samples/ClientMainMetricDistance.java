@@ -1,4 +1,4 @@
-package com.main;
+package com.samples;
 
 
 import com.Config;
@@ -13,8 +13,6 @@ import org.nustaq.serialization.FSTObjectOutput;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;

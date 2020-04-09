@@ -1,4 +1,4 @@
-package com.main;
+package com.samples;
 
 
 import com.thread.MultiThreadManager;

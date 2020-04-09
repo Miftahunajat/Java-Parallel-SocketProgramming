@@ -1,10 +1,7 @@
-package com.main;
+package com.samples;
 
 import com.Config;
 import com.automatic.AutomaticClustering;
-import com.clustering.BayuHierarchical;
-import com.clustering.ParallelHierarchicalClustering;
-import com.clustering.SerialHierarchicalClustering;
 import com.util.Core;
 
 import java.util.Arrays;

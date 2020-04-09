@@ -1,6 +1,6 @@
 package com.clustering;
 
-import com.main.Clustering;
+import com.samples.Clustering;
 
 public class ML {
 

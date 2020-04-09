@@ -1,8 +1,5 @@
 package com.clustering;
 
-import com.util.VectorSpaceHelper;
-
-import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 public abstract class BatchFutureCentroidDistance implements Callable<Double[][]> {

@@ -1,18 +1,10 @@
-package com.main;
+package com.samples;
 
 import com.Config;
-import com.automatic.AutomaticClustering;
 import com.clustering.ML;
 import com.clustering.SerialHierarchicalClustering;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 import com.util.Core;
 import com.util.ThreadUtil;
-import com.util.VectorSpaceHelper;
-import org.nustaq.serialization.FSTConfiguration;
-import org.nustaq.serialization.FSTObjectInput;
-import org.nustaq.serialization.FSTObjectOutput;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -20,8 +12,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Arrays;
 
 public class ClientAutomaticClusteringMain {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {

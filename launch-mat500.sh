@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass=com.main.PerformaTestCalculation500
+mvn exec:java -Dexec.mainClass=com.samples.PerformaTestCalculation500

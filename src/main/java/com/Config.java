@@ -13,3 +13,4 @@ public class Config {
     public static final String fileLocation = "src/main/resources/1kbigdata.csv";
     public static final int INTERVAL = 15;
 }
+

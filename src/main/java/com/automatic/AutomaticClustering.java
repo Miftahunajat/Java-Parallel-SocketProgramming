@@ -2,19 +2,15 @@ package com.automatic;
 
 import com.clustering.BayuHierarchical;
 import com.clustering.ML;
-import com.clustering.SerialHierarchicalClustering;
 import com.model.ClusterAndVariance;
 import com.thread.MultiThreadManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.DoubleBinaryOperator;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class AutomaticClustering extends ML {
 
