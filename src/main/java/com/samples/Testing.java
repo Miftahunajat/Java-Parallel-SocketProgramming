@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class Testing {
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
-        double[][] datas = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
+        Double[][] datas = Core.readLargeCSVWrapper("src/main/resources/1kbigdata.csv");
         try {
             int[] results = ParallelHierarchicalClustering.centroidLinkageClustering(datas, 3);
             System.out.println(Arrays.toString(results));
