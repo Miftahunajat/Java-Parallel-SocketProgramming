@@ -1,5 +1,9 @@
 package com.util;
 
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 public class Utils {
     public static int[] getUnique(int[] data) {
         SortedSet<Integer> set = new TreeSet<>();
@@ -31,5 +35,17 @@ public class Utils {
         }
 
         return newArray;
+    }
+
+    public static double[] getCentroid(double[][] data) {
+        double[] centroid = new double[data[0].length];
+        for(int i = 0; i < data[0].length; ++i) {
+            double initCentroid = 0.0;
+            for(int j = 0; j < data.length; ++j) {
+                initCentroid = initCentroid + data[j][i];
+            }
+            centroid[i] = initCentroid / (double)data.length;
+        }
+        return centroid;
     }
 }

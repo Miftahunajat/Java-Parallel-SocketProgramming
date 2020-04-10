@@ -51,13 +51,19 @@ public class AutomaticClustering  {
         }
 
         variance = Core.getMax(density);
+
         int optimum = (int) variance[1] + 1;
+
         density[optimum - 1] = -1.0;
         double globalOptimum;
+        double[] vRunner = Core.getMax(density);
+
         if (variance[0] == 0.0) {
             globalOptimum = 0.0;
+        } else if (vRunner[0] == 0.0) {
+            globalOptimum = 100.0;
         } else {
-            globalOptimum = variance[0] / variance[0];
+            globalOptimum = variance[0] / vRunner[0];
         }
 
         output[0] = optimum;
