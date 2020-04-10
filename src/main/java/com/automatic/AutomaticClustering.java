@@ -1,6 +1,5 @@
 package com.automatic;
 
-import com.clustering.ML;
 import com.model.ClusterAndVariance;
 import com.thread.MultiThreadManager;
 import com.util.Core;
@@ -12,15 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-public class AutomaticClustering extends ML {
-
-    public static int[] hierarchicalAutomaticClustering(Double[][] data){
-        int n = data.length;
-        for (int i = n; i > 1; i--) {
-//            new BayuHierarchical().SingleLinkage(data,i)
-        }
-        return null;
-    }
+public class AutomaticClustering  {
 
     public int[] parallelHierarchicalAutomaticClustering(double[][] data, int _interval) throws IOException {
         int n = data.length;

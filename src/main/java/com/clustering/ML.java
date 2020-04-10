@@ -1,18 +1,24 @@
 package com.clustering;
 
 import com.samples.Clustering;
+import com.util.Distance;
+import com.util.Utils;
+
+import java.util.Arrays;
 
 public class ML {
 
     public double[] getVariance(double[][] data, int[] clusters) {
-        int[] unique = new com.bayudwiyansatria.utils.Utils().getUnique(clusters);
-        double[] Variance = new com.bayudwiyansatria.mat.Mat().initArray(2, 0.0);
+        int[] unique = Utils.getUnique(clusters);
+        double[] Variance = new double[2];
+        Arrays.fill(Variance, 0,2,0.0);
         double[] variance = new double[unique.length];
         double[][] centroid = new double[unique.length][data[0].length];
         int[] newUnique = new int[unique.length];
         double tmpl = 0.0;
         int[][] position = new int[unique.length][data.length];
-        int[] initCentroid = new com.bayudwiyansatria.mat.Mat().initArray(unique.length, 0);
+        int[] initCentroid = new int[unique.length];
+        Arrays.fill(initCentroid, 0, unique.length, 0);
         if (unique.length > 1) {
             int i;
             for(i = 0; i < data.length; ++i) {
@@ -25,7 +31,7 @@ public class ML {
             double distance;
             for(i = 0; i < unique.length; ++i) {
                 newUnique[i] = initCentroid[i];
-                double[] tmp = new com.bayudwiyansatria.mat.Mat().initArray(data[0].length, 0.0);
+                double[] tmp = Utils.initArray(data[0].length, 0.0);
 
                 int j;
                 for(j = 0; j < newUnique[i]; ++j) {
@@ -41,7 +47,8 @@ public class ML {
                     distanceVector = 0.0;
 
                     for(j = 0; j < newUnique[i]; ++j) {
-                        distance = new com.bayudwiyansatria.mat.Mat().getDistanceAbsolute (data[position[i][j]], centroid[i]);
+
+                        distance = Distance.getDistance(data[position[i][j]], centroid[i]);
                         distanceVector += distance * distance;
                     }
 
@@ -56,7 +63,7 @@ public class ML {
             double[] grandMean = this.getCentroid(centroid);
 
             for(i = 0; i < unique.length; ++i) {
-                distance = new com.bayudwiyansatria.mat.Mat().getDistanceAbsolute (centroid[i], grandMean);
+                distance = Distance.getDistance(centroid[i], grandMean);
                 distanceVector += (double)newUnique[i] * distance * distance;
             }
 
