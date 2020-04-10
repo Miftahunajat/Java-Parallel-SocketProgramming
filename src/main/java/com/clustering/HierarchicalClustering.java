@@ -162,37 +162,4 @@ public class HierarchicalClustering {
         Double[] centroid2 = Core.getCentroidsFromDouble(data2);
         return mtm.getDistance(centroid1, centroid2);
     }
-
-    public int[] SingleLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-
-    public int[] CentroidLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-    public int[] CompleteLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-    public int[] AverageLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-    public double[] getCentroid(double[][] data) {
-        double[] centroid = new double[data[0].length];
-        for(int i = 0; i < data[0].length; ++i) {
-            double initCentroid = 0.0;
-            for(int j = 0; j < data.length; ++j) {
-                initCentroid = initCentroid + data[j][i];
-            }
-            centroid[i] = initCentroid / (double)data.length;
-        }
-        return centroid;
-    }
 }

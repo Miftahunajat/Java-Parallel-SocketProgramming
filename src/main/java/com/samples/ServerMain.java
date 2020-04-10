@@ -2,6 +2,7 @@ package com.samples;
 
 
 import com.thread.MultiThreadManager;
+import com.util.Utils;
 import com.util.VectorSpaceHelper;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -26,8 +27,8 @@ public class ServerMain {
         Double[][] kmat2 = new Double[][]{{2.0,3.0}, {2.0,3.0}};
         Double[][] hasil = VectorSpaceHelper.multiplyTwoMatrices(kmat1, kmat2);
 
-        Double[][] mat1O = Arrays.stream(new com.bayudwiyansatria.mat.Mat().initArrayRandom(10,1000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
-        Double[][] mat2O = Arrays.stream(new com.bayudwiyansatria.mat.Mat().initArrayRandom(1000,10_000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
+        Double[][] mat1O = Arrays.stream(Utils.initMatrixRandom(10,1000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
+        Double[][] mat2O = Arrays.stream(Utils.initMatrixRandom(1000,10_000,1,1000.0)).map(ArrayUtils::toObject).toArray(Double[][]::new);
 
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         for (int i = 0; i < 25; i++) {

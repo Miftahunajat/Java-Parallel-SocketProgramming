@@ -12,7 +12,7 @@ public class CluseringExample {
         double[][] data = Core.readLargeCSV("src/main/resources/2.5kbigdata");
         int NumberOfCluster = 4;
         System.out.println("lewat");
-        int[] results = new HierarchicalClustering().CentroidLinkage(data, NumberOfCluster);
+        int[] results = HierarchicalClustering.centroidLinkageClustering(data, NumberOfCluster);
         System.out.println(Arrays.toString(results));
 
         long finish = System.currentTimeMillis();

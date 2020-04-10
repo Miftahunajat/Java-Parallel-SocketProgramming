@@ -1,5 +1,5 @@
-import com.bayudwiyansatria.io.IO;
 import com.thread.MultiThreadManager;
+import com.util.Core;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class IrisDataTest {
     @Test
     public void irisTest() throws IOException {
-        double[][] irisData = new IO().readCSV_double("iris");
+        double[][] irisData = Core.readLargeCSV("iris");
         System.out.println(Arrays.deepToString(irisData));
 //        double[] a = Arrays.;
         MultiThreadManager mtm = MultiThreadManager.getInstance();

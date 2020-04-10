@@ -37,6 +37,23 @@ public class Utils {
         return newArray;
     }
 
+    public static double[][] initMatrixRandom(int rows, int cols, double min, double max) {
+        double[][] newArray = null;
+        if (rows > 0 && cols > 0) {
+            newArray = new double[rows][cols];
+
+            for(int i = 0; i < rows; ++i) {
+                for(int j = 0; j < cols; ++j) {
+                    newArray[i][j] = java.lang.Math.random() * (max - min) + min;
+                }
+            }
+        } else {
+            System.out.println("Array length must be greater than zero!");
+        }
+
+        return newArray;
+    }
+
     public static double[] getCentroid(double[][] data) {
         double[] centroid = new double[data[0].length];
         for(int i = 0; i < data[0].length; ++i) {
@@ -48,4 +65,5 @@ public class Utils {
         }
         return centroid;
     }
+
 }
