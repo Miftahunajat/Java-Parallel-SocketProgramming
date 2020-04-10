@@ -1,31 +1,10 @@
 package com.util;
 
 
-import com.bayudwiyansatria.io.IO;
-import com.bayudwiyansatria.math.Math;
-
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 
 public class Core {
-    private static Math math;
-    private static IO io;
-
-    public static Math getMatInstance(){
-        if (math == null) math = new Math();
-        return math;
-    }
-
-    public static IO getIoInstance(){
-        if (io == null) io = new IO();
-        return io;
-    }
-
-
-
-
-
     public static double[][] readLargeCSV(String filePath){
         try {
             File inputF = new File(filePath);
@@ -153,5 +132,82 @@ public class Core {
             retVal[i] = doubles.get(i);
         }
         return retVal;
+    }
+
+    public static int[] copyArray(int[] data) {
+        int[] newArray = new int[data.length];
+        System.arraycopy(data, 0, newArray, 0, data.length);
+        return newArray;
+    }
+
+    public static double[] copyArray(double[] data) {
+        double[] newArray = new double[data.length];
+        System.arraycopy(data, 0, newArray, 0, data.length);
+        return newArray;
+    }
+
+    public String[] copyArray(String[] data) {
+        String[] newArray = new String[data.length];
+        System.arraycopy(data, 0, newArray, 0, data.length);
+        return newArray;
+    }
+
+    public int[][] copyArray(int[][] data) {
+        int[][] newArray = new int[data.length][];
+
+        for(int i = 0; i < data.length; ++i) {
+            int dimension = data[i].length;
+            newArray[i] = new int[dimension];
+            System.arraycopy(data[i], 0, newArray[i], 0, dimension);
+        }
+
+        return newArray;
+    }
+
+    public double[][] copyArray(double[][] data) {
+        double[][] newArray = new double[data.length][];
+
+        for(int i = 0; i < data.length; ++i) {
+            int dimension = data[i].length;
+            newArray[i] = new double[dimension];
+            System.arraycopy(data[i], 0, newArray[i], 0, dimension);
+        }
+
+        return newArray;
+    }
+
+    public String[][] copyArray(String[][] data) {
+        String[][] newArray = new String[data.length][];
+
+        for(int i = 0; i < data.length; ++i) {
+            int dimension = data[i].length;
+            newArray[i] = new String[dimension];
+            System.arraycopy(data[i], 0, newArray[i], 0, dimension);
+        }
+
+        return newArray;
+    }
+
+    public static double[][] transposeMatrix(double[][] data) {
+        int rows = data.length;
+        int cols = data[0].length;
+        double[][] output = new double[cols][rows];
+        for(int i = 0; i < rows; ++i) {
+            for(int j = 0; j < cols; ++j) {
+                output[j][i] = data[i][j];
+            }
+        }
+        return output;
+    }
+
+    public static double[] getMax(double[] data) {
+        double[] max = new double[]{data[0], 0};
+        for(int i = 1; i < data.length; ++i) {
+            if (data[i] > max[0]) {
+                max[0] = data[i];
+                max[1] = i;
+            }
+        }
+        return max;
     }
 }

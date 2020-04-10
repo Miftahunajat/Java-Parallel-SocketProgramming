@@ -3,32 +3,38 @@ package com.samples;
 import com.thread.MultiThreadManager;
 import com.util.Core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
-public class PerformaTestCalculation500 {
+public class MatrixCalculation {
     public static void main(String[] args) throws Exception {
         double[][] irisData = Core.readLargeCSV("src/main/resources/1kbigdata.csv");
 
-        double[][] s100Data = Arrays.copyOfRange(irisData, 0,500);
-        double[][] tS100Data = new com.bayudwiyansatria.mat.Mat().transposeMatrix(s100Data);
+        double[][] s100Data = Arrays.copyOfRange(irisData, 0,100);
+        double[][] tS100Data = Core.transposeMatrix(s100Data);
 //        System.out.println(Arrays.deepToString(irisData));
 
         long start = System.currentTimeMillis();
         MultiThreadManager mtm = MultiThreadManager.getInstance();
+        List<Future<Double[][]>> results = new ArrayList<>();
         // maincode
-        for (int i = 0; i < 100_000; i++) {
-//            mtm.startResult(s100Data, tS100Data);
-//            VectorSpaceHelper.multiplyTwoMatrices(s100Data, tS100Data);
+        for (int i = 0; i < 10; i++) {
+//            results.add(mtm.startResult(s100Data, tS100Data));
         }
-        mtm.close();
-//        MultiThreadManager mtm = MultiThreadManager.getInstance();
+        System.out.println("finish");
+        results.forEach(c-> {
+            try {
+                c.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
 
-//        for (int i = 0; i < irisData.length; i++) {
-//            for (int j = 0; j < irisData.length; j++) {
-//                mtm.startResult(Arrays.toString(irisData[i]) + "||*||" + Arrays.toString(irisData[j]));
-//            }
-//        }
-        //end of main
+
+        mtm.close();
 
         long finish = System.currentTimeMillis();
         long timeElapsed = finish - start;

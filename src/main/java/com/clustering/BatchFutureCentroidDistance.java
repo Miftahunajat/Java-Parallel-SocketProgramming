@@ -15,19 +15,5 @@ public abstract class BatchFutureCentroidDistance implements Callable<Double[][]
         this.rangeJ = j;
     }
 
-//    @Override
-//    public Double[][] call() throws Exception {
-//        Double results[][] = new Double[substractsResult.length][];
-//        for (int j = 0; j < substractsResult.length; j++) {
-//            double res = 0;
-//            for (int k = 0; k < substractsResult[j].length; k++) {
-//                res += substractsResult[j][k]*substractsResult[j][k];
-//            }
-//            results[j] = new Double[]{res, rangeI[j], rangeJ[j]};
-//        }
-//
-//
-//        return results;
-//    }
 }
 

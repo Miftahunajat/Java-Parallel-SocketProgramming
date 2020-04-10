@@ -9,7 +9,7 @@ public class CluseringExample {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
 
-        double[][] data = Core.getIoInstance().readCSV_double("src/main/resources/2.5kbigdata");
+        double[][] data = Core.readLargeCSV("src/main/resources/2.5kbigdata");
         int NumberOfCluster = 4;
         System.out.println("lewat");
         int[] results = new HierarchicalClustering().CentroidLinkage(data, NumberOfCluster);

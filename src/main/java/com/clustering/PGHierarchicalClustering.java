@@ -1,7 +1,5 @@
 package com.clustering;
 
-import com.bayudwiyansatria.mat.Mat;
-import com.bayudwiyansatria.mat.Vector;
 import com.thread.MultiThreadManager;
 import com.util.Core;
 import com.util.VectorSpaceHelper;

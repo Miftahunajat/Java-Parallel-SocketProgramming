@@ -1,10 +1,9 @@
 package com.clustering;
 
 import com.Config;
-import com.bayudwiyansatria.mat.Mat;
-import com.bayudwiyansatria.mat.Vector;
 import com.thread.MultiThreadManager;
 import com.util.Core;
+import com.util.Distance;
 
 import java.io.IOException;
 import java.util.*;
@@ -92,105 +91,6 @@ public class PG3HierarchicalClustering {
         mtm.close();
         return selCentroids;
     }
-//    public static int[] dump1CentroidLinkageClustering(double[][] data, int numberOfClusters) throws IOException {
-//        int currentClusterCount = data.length;
-//        int[] selCentroids = new int[data.length];
-//        double[][] centroids = new double[data.length][];
-//        ExecutorService executorService;
-////        mtm = MultiThreadManager.getInstance();
-//
-//        Map<Integer, double[][]> mapData = new HashMap<>();
-//
-//        for (int i = 0; i < data.length; i++) {
-//            mapData.put(i, new double[][]{data[i]});
-//            selCentroids[i] = i;
-//            centroids[i] = data[i].clone();
-//        }
-//        List<Future<CentroidDistance>> distances = new ArrayList<>();
-//        while (currentClusterCount != numberOfClusters){
-//            executorService = Executors.newFixedThreadPool(3);
-//
-//            int left = -1;
-//            int right = -1;
-//
-//            final CentroidDistance[] minDistance = {new CentroidDistance(Double.MAX_VALUE, -1, -1)};
-//            for (int i = 0; i < data.length; i++) {
-//                if (mapData.get(i) == null) continue;
-//
-//                for (int j = i+1; j < data.length; j++) {
-//                    if (mapData.get(j) == null) continue;
-//                    executorService.execute(new FutureCentroidDistance(centroids[i], centroids[j],i,j) {
-//                        @Override
-//                        public void run() {
-//                            double distance = 0;
-//                            for (int i = 0; i < centroid1.length; i++) {
-//                                distance += Math.pow((centroid1[i] - centroid2[i]),2);
-//                            }
-////                            distance = new Math.sqrt()
-////                            return Math.sqrt(retval);
-//                            if (distance < minDistance[0].getDistance()){
-//                                minDistance[0] = new CentroidDistance(distance, i, j);
-//
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//            executorService.shutdown();
-//
-////            left = minDistance[0].getLeftCentroid();
-////            right = minDistance[0].getRightCentroid();
-////
-////            int finalLeft = left;
-////            int finalRight = right;
-//////            System.out.println(currentClusterCount);
-////
-////            if (left < right){
-////                double[][] newData = Core.joinMultipleArray(mapData.get(left), mapData.get(right));
-////                mapData.remove(right);
-////                mapData.put(left, newData);
-////                selCentroids = Arrays
-////                        .stream(selCentroids).map(idx -> idx == finalRight ? finalLeft : idx)
-////                        .toArray();
-////                centroids[left] = Core.getCentroidsFromDouble(newData);
-////            }else{
-////                double[][] newData = Core.joinMultipleArray(mapData.get(right), mapData.get(left));
-////                mapData.remove(left);
-////                mapData.put(right, newData);
-////                selCentroids = Arrays
-////                        .stream(selCentroids).map(idx -> idx == finalLeft ? finalRight : idx)
-////                        .toArray();
-////                centroids[right] = Core.getCentroidsFromDouble(newData);
-////            }
-//
-//            currentClusterCount--;
-//
-//        }
-////        executorService.shutdown();
-//        return selCentroids;
-//    }
-
-//    public static int[] parallelHierarchicalClustering(double[][] datum, int numberOfClusters) throws IOException {
-//        MultiThreadManager mtm = MultiThreadManager.getInstance();
-//        Double[][] newData = Arrays.stream(datum).map(ArrayUtils::toObject).toArray(Double[][]::new);
-//        int currentClusterCount = newData.length;
-//        int[] selCentroids = new int[newData.length];
-//        for (int i = 0; i < selCentroids.length; i++) {
-//            selCentroids[i] = i;
-//        }
-//        while (currentClusterCount != numberOfClusters){
-//
-//            double distanceMin = Double.MAX_VALUE;
-//            int left = -1;
-//            int right = -1;
-//
-//            List<Future<CentroidDistance>> distances = new ArrayList<>();
-//
-//            for (int i = 0; i < newData.length; i++) {
-//                for (int j = i+1; j < newData.length; j++) {
-//                    int finalI = i;
-//                    int[] finalSelCentroids = selCentroids;
-//                    Double[][] data1 = IntStream.range(0, newData.length)
 
     private static double centroidLinkage(double[] centroid1, double[] centroid2) {
         double retval = 0;
@@ -220,7 +120,7 @@ public class PG3HierarchicalClustering {
             for (int i = 0; i < data.length; i++) {
                 for (int j = 0; j < data.length; j++) {
                     if (centroids[i] == centroids[j]) continue;
-                    double distance = new Vector().getDistance(centroids[i], centroids[j] );
+                    double distance = Distance.getDistance(centroids[i], centroids[j] );
                 }
             }
              currentClusters--;
