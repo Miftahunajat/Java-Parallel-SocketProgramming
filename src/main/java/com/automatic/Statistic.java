@@ -7,7 +7,7 @@ import com.util.Utils;
 
 import java.util.Arrays;
 
-public class ML {
+public class Statistic {
 
     public double[] getVariance(double[][] data, int[] clusters) {
         int[] unique = Utils.getUnique(clusters);

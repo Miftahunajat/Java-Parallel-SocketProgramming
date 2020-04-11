@@ -2,7 +2,7 @@ package com.thread;
 
 import com.clustering.CentroidDistance;
 import com.clustering.FutureCentroidDistance;
-import com.automatic.ML;
+import com.automatic.Statistic;
 import com.clustering.SerialHierarchicalClustering;
 import com.model.ClusterAndVariance;
 import com.model.ClusterAndVarianceFuture;
@@ -360,7 +360,7 @@ public class MultiThreadManager implements ClientHandler.ClientInteraction {
         }
         try {
             int[] clustersResult = SerialHierarchicalClustering.pCentroidLinkageClustering(data,x);
-            double[] variance = new ML().getVariance(data, clustersResult);
+            double[] variance = new Statistic().getVariance(data, clustersResult);
             ClusterAndVariance clusterAndVariance = new ClusterAndVariance(clustersResult, variance);
             return ConcurrentUtils.constantFuture(clusterAndVariance);
         } catch (Exception e) {

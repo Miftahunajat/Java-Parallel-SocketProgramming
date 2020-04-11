@@ -1,7 +1,7 @@
 package com.samples;
 
 import com.Config;
-import com.automatic.ML;
+import com.automatic.Statistic;
 import com.clustering.SerialHierarchicalClustering;
 import com.util.Core;
 import com.util.ThreadUtil;
@@ -31,7 +31,7 @@ public class ClientAutomaticClusteringMain {
                     counter++;
                     int numClusters = (int) ThreadUtil.readObjectFromStream(dataInputStream);
                     int[] cluster = SerialHierarchicalClustering.pCentroidLinkageClustering(datas, numClusters);
-                    double[] variances = new ML().getVariance(datas, cluster);
+                    double[] variances = new Statistic().getVariance(datas, cluster);
 
                     ThreadUtil.writeObjectToStream(dataOutputStream, cluster);
                     ThreadUtil.writeObjectToStream(dataOutputStream, variances);
