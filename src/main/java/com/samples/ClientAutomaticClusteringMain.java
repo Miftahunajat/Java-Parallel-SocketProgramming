@@ -1,7 +1,7 @@
 package com.samples;
 
 import com.Config;
-import com.clustering.ML;
+import com.automatic.ML;
 import com.clustering.SerialHierarchicalClustering;
 import com.util.Core;
 import com.util.ThreadUtil;

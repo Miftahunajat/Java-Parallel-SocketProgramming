@@ -2,7 +2,7 @@ package com.thread;
 
 import com.clustering.CentroidDistance;
 import com.clustering.FutureCentroidDistance;
-import com.clustering.ML;
+import com.automatic.ML;
 import com.clustering.SerialHierarchicalClustering;
 import com.model.ClusterAndVariance;
 import com.model.ClusterAndVarianceFuture;
@@ -12,7 +12,6 @@ import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;

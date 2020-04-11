@@ -1,4 +1,4 @@
-package com.clustering;
+package com.automatic;
 
 import com.samples.Clustering;
 import com.util.Distance;
