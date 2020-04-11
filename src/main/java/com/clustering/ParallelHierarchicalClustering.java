@@ -46,9 +46,6 @@ public class ParallelHierarchicalClustering {
                                 distMatrixT[k] = centroid2[k];
                             }
                             double distance = mtm.getDistance(distMatrix, distMatrixT).get();
-//                            if (distance == 0.0)
-//                            System.out.println(distance);
-//                            double distance = Arrays.stream(result[0]).reduce(0.0, Double::sum);
                             if (distance < minDistance[0].getDistance()){
                                 minDistance[0] = new CentroidDistance(distance, left, right);
                             }
@@ -91,37 +88,5 @@ public class ParallelHierarchicalClustering {
         executorService.shutdownNow();
         mtm.close();
         return selCentroids;
-    }
-
-
-    private static double centroidLinkage(double[] centroid1, double[] centroid2) {
-        double retval = 0;
-        for (int i = 0; i < centroid1.length; i++) {
-            retval += Math.pow((centroid1[i] - centroid2[i]),2);
-        }
-        return Math.sqrt(retval);
-    }
-
-    private static Future<Double> centroidLinkage(Double[][] data1, Double[][] data2, MultiThreadManager mtm) {
-        Double[] centroid1 = Core.getCentroidsFromDouble(data1);
-        Double[] centroid2 = Core.getCentroidsFromDouble(data2);
-        return mtm.getDistance(centroid1, centroid2);
-    }
-
-    public int[] SingleLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-    public double[] getCentroid(double[][] data) {
-        double[] centroid = new double[data[0].length];
-        for(int i = 0; i < data[0].length; ++i) {
-            double initCentroid = 0.0;
-            for(int j = 0; j < data.length; ++j) {
-                initCentroid = initCentroid + data[j][i];
-            }
-            centroid[i] = initCentroid / (double)data.length;
-        }
-        return centroid;
     }
 }

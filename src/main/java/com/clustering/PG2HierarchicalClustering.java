@@ -61,8 +61,6 @@ public class PG2HierarchicalClustering {
             Double[] rangeJ = new Double[0];;
             Double[][] dataCentroidsJ;
             int divider = Config.DIVIDER;
-//            System.out.println(len / divider);
-//            System.out.println(len/divider);
             if (len / divider > Config.MAX_MATRIX_COUNT) {
                 for (int i = 1; i <= divider; i++) {
                     rangeI = oldRangeI.subList(startIndex, len * i / divider).toArray(rangeI);

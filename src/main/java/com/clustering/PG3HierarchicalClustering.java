@@ -30,7 +30,6 @@ public class PG3HierarchicalClustering {
             int left;
             int right;
 
-//            final CentroidDistance[] minDistance = {new CentroidDistance(Double.MAX_VALUE, -1, -1)};
             List<Future<CentroidDistance>> futureCentroidDistances = new ArrayList<>();
 
             for (int i = 0; i < data.length; i++) {
@@ -90,74 +89,5 @@ public class PG3HierarchicalClustering {
         executorService.shutdownNow();
         mtm.close();
         return selCentroids;
-    }
-
-    private static double centroidLinkage(double[] centroid1, double[] centroid2) {
-        double retval = 0;
-        for (int i = 0; i < centroid1.length; i++) {
-            retval += Math.pow((centroid1[i] - centroid2[i]),2);
-        }
-        return Math.sqrt(retval);
-    }
-
-    private static Future<Double> centroidLinkage(Double[][] data1, Double[][] data2, MultiThreadManager mtm) {
-        Double[] centroid1 = Core.getCentroidsFromDouble(data1);
-        Double[] centroid2 = Core.getCentroidsFromDouble(data2);
-        return mtm.getDistance(centroid1, centroid2);
-    }
-
-    public int[] optimizedCentroidLinkage(double[][] data, int numberOfCluster){
-        int[] clusters = new int[data.length];
-        double[][] centroids = new double[data.length][data[0].length];
-        int currentClusters = data.length;
-        for(int i = 0; i < data.length; i++) {
-            clusters[i] = i;
-            centroids[i] = data[i];
-        }
-
-        do {
-            double minDistance = Double.MAX_VALUE;
-            for (int i = 0; i < data.length; i++) {
-                for (int j = 0; j < data.length; j++) {
-                    if (centroids[i] == centroids[j]) continue;
-                    double distance = Distance.getDistance(centroids[i], centroids[j] );
-                }
-            }
-             currentClusters--;
-        }while (currentClusters < numberOfCluster);
-//        new Vector().getDistance()
-        return new int[]{0};
-    }
-
-    public int[] SingleLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-    public int[] CentroidLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-    public int[] CompleteLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-    public int[] AverageLinkage(String[][] data, int NumberOfCluster){
-        int cluster[] = null;
-        return cluster;
-    }
-
-    public double[] getCentroid(double[][] data) {
-        double[] centroid = new double[data[0].length];
-        for(int i = 0; i < data[0].length; ++i) {
-            double initCentroid = 0.0;
-            for(int j = 0; j < data.length; ++j) {
-                initCentroid = initCentroid + data[j][i];
-            }
-            centroid[i] = initCentroid / (double)data.length;
-        }
-        return centroid;
     }
 }
