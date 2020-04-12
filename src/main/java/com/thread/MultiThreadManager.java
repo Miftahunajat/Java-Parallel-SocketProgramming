@@ -6,6 +6,7 @@ import com.automatic.Statistic;
 import com.clustering.SerialHierarchicalClustering;
 import com.model.ClusterAndVariance;
 import com.model.ClusterAndVarianceFuture;
+import com.tunnel.ServerConfig;
 import com.util.VectorSpaceHelper;
 import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 
@@ -20,34 +21,32 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
-
-import static com.Config.MAX_CLIENT;
-import static com.Config.PORT;
-
 public class MultiThreadManager implements ClientHandler.ClientInteraction {
 
     public static int lastClientId = 0;
     private static Map<Integer, ClientHandler> threadClients = new HashMap<>();
     private ServerSocket serverSocket;
     private static MultiThreadManager instance;
-    private AtomicIntegerArray clientStatuses = new AtomicIntegerArray(MAX_CLIENT);
+    private AtomicIntegerArray clientStatuses;
     private int numberOfConnectedClient;
     public ExecutorService executorService;
     public AtomicInteger serverComputeCount = new AtomicInteger();
     public AtomicInteger temp = new AtomicInteger();
-    public int[] clientComputeCount = new int[MAX_CLIENT];
+    public int[] clientComputeCount;
 
     private double[][] dataset;
 
-    private MultiThreadManager() throws IOException {
+    private MultiThreadManager(ServerConfig serverConfig) throws IOException {
         executorService = Executors.newFixedThreadPool(10);
-        serverSocket = new ServerSocket(PORT);
+        serverSocket = new ServerSocket(serverConfig.getPort());
+        clientComputeCount = new int[serverConfig.getMaxClient()];
+        clientStatuses = new AtomicIntegerArray(serverConfig.getMaxClient());
         awaitClient();
     }
 
-    public static MultiThreadManager getInstance() throws IOException {
+    public static MultiThreadManager getInstance(ServerConfig serverConfig) throws IOException {
         if (instance == null) {
-            instance = new MultiThreadManager();
+            instance = new MultiThreadManager(serverConfig);
         }
         return instance;
     }

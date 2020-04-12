@@ -2,6 +2,7 @@ package com.automatic;
 
 import com.model.ClusterAndVariance;
 import com.thread.MultiThreadManager;
+import com.tunnel.ServerConfig;
 import com.util.Core;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class AutomaticClustering  {
 
-    public int[] parallelHierarchicalAutomaticClustering(double[][] data, int _interval) throws IOException {
+    public int[] parallelHierarchicalAutomaticClustering(double[][] data, int _interval, ServerConfig serverConfig) throws IOException {
         int n = data.length;
         int interval = _interval;
         double[] V = new double[_interval + 1];
@@ -21,7 +22,7 @@ public class AutomaticClustering  {
         double[] density = new double[_interval + 1];
         double[] variance;
         double[] output = new double[2];
-        MultiThreadManager mtm = MultiThreadManager.getInstance();
+        MultiThreadManager mtm = MultiThreadManager.getInstance(serverConfig);
         List<Future<ClusterAndVariance>> clusterers = new ArrayList<>();
 
         for (int i = n; i > 1; i--) {

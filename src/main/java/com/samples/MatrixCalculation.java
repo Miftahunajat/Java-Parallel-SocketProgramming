@@ -1,6 +1,8 @@
 package com.samples;
 
+import com.Config;
 import com.thread.MultiThreadManager;
+import com.tunnel.ServerConfig;
 import com.util.Core;
 
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ public class MatrixCalculation {
         double[][] tS100Data = Core.transposeMatrix(s100Data);
 
         long start = System.currentTimeMillis();
+        ServerConfig serverConfig = new ServerConfig(Config.PORT, Config.INET_ADDRESS_NAME);
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         List<Future<Double[][]>> results = new ArrayList<>();
         // maincode

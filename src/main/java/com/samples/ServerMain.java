@@ -23,8 +23,6 @@ public class ServerMain {
         long timeElapsed = finish - start;
         System.out.println("===========================");
         System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
-
-
     }
 
 }
