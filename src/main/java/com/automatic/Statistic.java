@@ -1,6 +1,5 @@
 package com.automatic;
 
-import com.samples.Clustering;
 import com.util.Distance;
 import com.util.MathUtil;
 import com.util.Utils;

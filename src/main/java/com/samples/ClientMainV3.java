@@ -17,7 +17,7 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class ClientMainMetricDistance {
+public class ClientMainV3 {
 
 
     public static void main(String[] args) throws Exception {

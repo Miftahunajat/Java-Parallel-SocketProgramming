@@ -15,14 +15,12 @@ public class MatrixCalculation {
 
         double[][] s100Data = Arrays.copyOfRange(irisData, 0,100);
         double[][] tS100Data = Core.transposeMatrix(s100Data);
-//        System.out.println(Arrays.deepToString(irisData));
 
         long start = System.currentTimeMillis();
         MultiThreadManager mtm = MultiThreadManager.getInstance();
         List<Future<Double[][]>> results = new ArrayList<>();
         // maincode
         for (int i = 0; i < 10; i++) {
-//            results.add(mtm.startResult(s100Data, tS100Data));
         }
         System.out.println("finish");
         results.forEach(c-> {

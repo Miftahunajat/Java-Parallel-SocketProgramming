@@ -1,16 +1,17 @@
 package com.samples;
 
-import com.clustering.*;
+import com.Config;
+import com.automatic.AutomaticClustering;
 import com.util.Core;
 
 import java.util.Arrays;
 
-public class Testing {
-    public static void main(String[] args) throws Exception {
+public class AutomaticClusteringServer {
+    public static void main(String[] args) {
         long start = System.currentTimeMillis();
-        Double[][] datas = Core.readLargeCSVWrapper("src/main/resources/1kbigdata.csv");
+        double[][] datas = Core.readLargeCSV(Config.fileLocation);
         try {
-            int[] results = ParallelHierarchicalClustering.centroidLinkageClustering(datas, 3);
+            int[] results = new AutomaticClustering().parallelHierarchicalAutomaticClustering(datas, Config.INTERVAL);
             System.out.println(Arrays.toString(results));
         } catch (Exception e) {
             e.printStackTrace();
@@ -22,6 +23,6 @@ public class Testing {
         System.out.println("Time Elapsed : " + timeElapsed/1000.f + "Seconds");
 
 
-    }
 
+    }
 }

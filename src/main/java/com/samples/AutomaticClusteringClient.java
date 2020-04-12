@@ -13,7 +13,7 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class ClientAutomaticClusteringMain {
+public class AutomaticClusteringClient {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
         double[][] datas = Core.readLargeCSV(Config.fileLocation);
         int counter = 0;

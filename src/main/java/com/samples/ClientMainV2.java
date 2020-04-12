@@ -13,7 +13,7 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class ClientMainDistance {
+public class ClientMainV2 {
     public static void main(String[] args) throws Exception {
         Kryo kryo;
         kryo = new Kryo();
@@ -62,28 +62,6 @@ public class ClientMainDistance {
                     kryo.writeObject(output, hasil);
                     output.flush();
 
-//                    data1 = kryo.readObject(input, Double[][].class);
-//                    System.out.println("read 1");
-//                    System.out.println(Arrays.deepToString(data1));
-//                    input = new Input(s.getInputStream());
-//                    secondLength = (Integer) objectInputStream.readObject();
-//                    data2 = new Double[secondLength][];
-//                    for (Integer i = 0; i < secondLength; i++) {
-//                        data2[i] = (Double[]) objectInputStream.readObject();
-//                    }
-//                    data2 = kryo.readObject(input, Double[][].class);
-//                    System.out.println("read 2");
-//                    System.out.println(Arrays.deepToString(data2));
-//                    input.close();
-
-//                    System.out.println(Arrays.deepToString(hasil));
-
-//                    objectOutputStream.writeObject(hasil);
-
-
-//            System.out.println(Arrays.deepToString(hasil));
-
-//                    objectOutputStream.flush();
 
                 }
             }catch (ConnectException connectException){

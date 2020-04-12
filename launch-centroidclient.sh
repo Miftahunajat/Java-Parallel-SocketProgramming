@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass=com.samples.ClientMainDistance
+mvn exec:java -Dexec.mainClass=com.samples.ClientMainV2

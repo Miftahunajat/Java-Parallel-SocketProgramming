@@ -5,7 +5,7 @@ import com.util.Core;
 
 import java.util.Arrays;
 
-public class CluseringExample {
+public class ClusteringExample {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
 
