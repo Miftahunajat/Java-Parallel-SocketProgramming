@@ -2,7 +2,6 @@ package com;
 
 public class Config {
     public static final String INET_ADDRESS_NAME = "10.252.175.164";
-//    public static final String INET_ADDRESS_NAME = "localhost";
     public static final int MAX_MATRIX_COUNT = 40_000;
     public static final int MAX_MATRIX_COMBINATION = 499_500;
     public static final int MAX_LIMIT = 1000;
