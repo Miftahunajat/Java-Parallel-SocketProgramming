@@ -2,6 +2,7 @@ package com.clustering;
 
 import com.Config;
 import com.thread.MultiThreadManager;
+import com.tunnel.ServerConfig;
 import com.util.Core;
 
 import java.util.*;
@@ -12,8 +13,8 @@ import java.util.concurrent.Future;
 
 public class PG2HierarchicalClustering {
 
-    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters) throws Exception {
-        MultiThreadManager mtm = MultiThreadManager.getInstance();
+    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters, ServerConfig serverConfig) throws Exception {
+        MultiThreadManager mtm = MultiThreadManager.getInstance(serverConfig);
         int core = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService = Executors.newFixedThreadPool(core);
         int currentClusterCount = data.length;

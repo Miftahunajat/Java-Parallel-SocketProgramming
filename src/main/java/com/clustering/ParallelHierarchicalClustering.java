@@ -1,6 +1,7 @@
 package com.clustering;
 
 import com.thread.MultiThreadManager;
+import com.tunnel.ServerConfig;
 import com.util.Core;
 
 import java.io.IOException;
@@ -9,8 +10,8 @@ import java.util.concurrent.*;
 
 public class ParallelHierarchicalClustering {
 
-    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters) throws InterruptedException, IOException {
-        MultiThreadManager mtm = MultiThreadManager.getInstance();
+    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters, ServerConfig serverConfig) throws InterruptedException, IOException {
+        MultiThreadManager mtm = MultiThreadManager.getInstance(serverConfig);
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         int currentClusterCount = data.length;
         int[] selCentroids = new int[data.length];

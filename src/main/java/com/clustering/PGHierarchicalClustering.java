@@ -1,6 +1,7 @@
 package com.clustering;
 
 import com.thread.MultiThreadManager;
+import com.tunnel.ServerConfig;
 import com.util.Core;
 
 import java.util.*;
@@ -8,8 +9,8 @@ import java.util.concurrent.*;
 
 public class PGHierarchicalClustering {
 
-    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters) throws Exception {
-        MultiThreadManager mtm = MultiThreadManager.getInstance();
+    public static int[] centroidLinkageClustering(Double[][] data, int numberOfClusters, ServerConfig serverConfig) throws Exception {
+        MultiThreadManager mtm = MultiThreadManager.getInstance(serverConfig);
         int currentClusterCount = data.length;
 
         int[] selCentroids = new int[data.length];

@@ -20,7 +20,7 @@ public class MatrixCalculation {
 
         long start = System.currentTimeMillis();
         ServerConfig serverConfig = new ServerConfig(Config.PORT, Config.INET_ADDRESS_NAME);
-        MultiThreadManager mtm = MultiThreadManager.getInstance();
+        MultiThreadManager mtm = MultiThreadManager.getInstance(serverConfig);
         List<Future<Double[][]>> results = new ArrayList<>();
         // maincode
         for (int i = 0; i < 10; i++) {

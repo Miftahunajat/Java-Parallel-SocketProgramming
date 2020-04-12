@@ -14,10 +14,10 @@ public class Server {
     }
 
     public int[] hierarchicalClustering(String csv, int numbersOfClusters) {
-        Double[][] datas = Core.readLargeCSVWrapper("src/main/resources/1kbigdata.csv");
+        Double[][] datas = Core.readLargeCSVWrapper(csv);
         int[] results = null;
         try {
-            results = ParallelHierarchicalClustering.centroidLinkageClustering(datas, numbersOfClusters);
+            results = ParallelHierarchicalClustering.centroidLinkageClustering(datas, numbersOfClusters, serverConfig);
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
