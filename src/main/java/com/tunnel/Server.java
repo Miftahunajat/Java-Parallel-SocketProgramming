@@ -1,5 +1,6 @@
 package com.tunnel;
 
+import com.automatic.AutomaticClustering;
 import com.clustering.ParallelHierarchicalClustering;
 import com.util.Core;
 
@@ -19,6 +20,17 @@ public class Server {
         try {
             results = ParallelHierarchicalClustering.centroidLinkageClustering(datas, numbersOfClusters, serverConfig);
         } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+        return results;
+    }
+
+    public int[] automaticClustering(String csv, int interval) {
+        double[][] datas = Core.readLargeCSV(csv);
+        int[] results = null;
+        try {
+            results = new AutomaticClustering().parallelHierarchicalAutomaticClustering(datas, interval, serverConfig);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return results;
