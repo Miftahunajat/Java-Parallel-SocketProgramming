@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: IrisDataTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.188 sec - in IrisDataTest
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.072 sec <<< FAILURE! - in IrisDataTest
+irisTest(IrisDataTest)  Time elapsed: 0.022 sec  <<< ERROR!
+java.lang.NullPointerException: null
+	at IrisDataTest.irisTest(IrisDataTest.java:14)
+

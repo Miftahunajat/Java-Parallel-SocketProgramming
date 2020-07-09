@@ -7,6 +7,7 @@ import com.util.Core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -45,26 +46,24 @@ public class AutomaticClustering  {
             interval--;
         }
 
-        for(int j = _interval - 1; j > 0; --j) {
-            if (V[j - 1] >= V[j] && V[j + 1] > V[j]) {
-                density[j] = V[j + 1] + V[j - 1] - 2.0 * V[j];
+        // Identify Global Optimum
+        for(int i = _interval - 1; i > 0; --i) {
+            if (V[i - 1] >= V[i] && V[i + 1] > V[i]) {
+                density[i] = V[i + 1] + V[i - 1] - 2.0 * V[i];
             }
         }
 
         variance = Core.getMax(density);
+        System.out.println(Arrays.toString(variance));
 
         int optimum = (int) variance[1] + 1;
 
         density[optimum - 1] = -1.0;
         double globalOptimum;
-        double[] vRunner = Core.getMax(density);
-
         if (variance[0] == 0.0) {
             globalOptimum = 0.0;
-        } else if (vRunner[0] == 0.0) {
-            globalOptimum = 100.0;
         } else {
-            globalOptimum = variance[0] / vRunner[0];
+            globalOptimum = variance[0] / variance[0];
         }
 
         output[0] = optimum;
