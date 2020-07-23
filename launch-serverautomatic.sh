@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass=com.samples.AutomaticClusteringServer
+mvn exec:java -Dexec.mainClass=com.miftahunajat.samples.AutomaticClusteringServer
