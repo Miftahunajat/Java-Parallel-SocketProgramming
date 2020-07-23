@@ -1,6 +1,4 @@
-import com.thread.MultiThreadManager;
-import com.tunnel.ServerConfig;
-import com.util.Core;
+import com.miftahunajat.util.Core;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -9,12 +7,7 @@ import java.util.Arrays;
 public class IrisDataTest {
     @Test
     public void irisTest() throws IOException {
-        double[][] irisData = Core.readLargeCSV("iris");
+        double[][] irisData = Core.readLargeCSV("iris.csv");
         System.out.println(Arrays.deepToString(irisData));
-        for (int i = 0; i < irisData.length; i++) {
-            for (int j = 0; j < irisData.length; j++) {
-//                mtm.startResult(Arrays.toString(irisData[i]) + "||*||"+Arrays.toString(irisData[j]));
-            }
-        }
     }
 }
